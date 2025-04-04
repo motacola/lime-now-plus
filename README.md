@@ -1,6 +1,8 @@
 # Lime Now+ App
 
-A mobile app interface prototype for "Lime Now+" - a tourism/local experience app with the tagline "Don't just visit. Lime like a local."
+Don't just visit. Lime like a local.
+
+A mobile app interface prototype for "Lime Now+" - a tourism/local experience app.
 
 ## Features
 
