@@ -712,72 +712,74 @@
     <!-- Explore View Template -->
     <template x-if="view === 'explore'">
       <!-- EXPLORE PAGE -->
-      <section id="explore" x-data="explorePage()" class="h-full flex flex-col">
+      <div class="h-full overflow-y-auto pb-36 scrollbar scrollbar-thumb-slate-300 scrollbar-track-transparent overscroll-x-none">
+        <section id="explore" x-data="explorePage()" class="h-full flex flex-col">
 
-        <!-- Sticky header --------------------------------------->
-        <header class="sticky top-0 z-10 bg-white/95 backdrop-blur px-4 pt-4 pb-3 flex items-center gap-2">
-          <h1 class="text-lg font-semibold flex-1">Explore</h1>
-          <button class="relative">
-            <i class="lucide lucide-bell w-5 h-5"></i>
-            <span class="absolute -top-1 -right-1 w-4 h-4 bg-rose-500 text-[10px] font-bold text-white rounded-full flex items-center justify-center">2</span>
-          </button>
-        </header>
+          <!-- Sticky header --------------------------------------->
+          <header class="sticky top-0 z-10 bg-white/95 backdrop-blur px-4 pt-4 pb-3 flex items-center gap-2">
+            <h1 class="text-lg font-semibold flex-1">Explore</h1>
+            <button class="relative">
+              <i class="lucide lucide-bell w-5 h-5"></i>
+              <span class="absolute -top-1 -right-1 w-4 h-4 bg-rose-500 text-[10px] font-bold text-white rounded-full flex items-center justify-center">2</span>
+            </button>
+          </header>
 
-        <!-- Scroll area ----------------------------------------->
-        <div class="flex-1 overflow-y-auto px-4 pb-36 scrollbar scrollbar-thumb-slate-300 scrollbar-track-transparent overscroll-x-none">
+          <!-- Scroll area ----------------------------------------->
+          <div class="flex-1 px-4">
 
-          <!-- Search bar -->
-          <div class="relative">
-            <input type="text" placeholder="Search destinations, activities..."
-                   class="w-full border border-slate-200 rounded-xl py-2.5 pl-10 pr-3 text-sm focus:outline-none focus:ring-2 focus:ring-lime-500">
-            <i class="lucide lucide-search w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
-          </div>
+            <!-- Search bar -->
+            <div class="relative">
+              <input type="text" placeholder="Search destinations, activities..."
+                     class="w-full border border-slate-200 rounded-xl py-2.5 pl-10 pr-3 text-sm focus:outline-none focus:ring-2 focus:ring-lime-500">
+              <i class="lucide lucide-search w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
+            </div>
 
-          <!-- Category pills (horizontal scroll) -->
-          <div class="mt-5 flex gap-3 overflow-x-auto pb-1">
-            <template x-for="cat in ['Beaches','Dining','Hotels','Nightlife','Hikes','Museums']" :key="cat">
-              <button
-                @click="activeCat = cat"
-                class="shrink-0 px-5 py-2 rounded-full text-sm whitespace-nowrap"
-                :class="activeCat===cat ? 'bg-lime-500 text-white' : 'bg-slate-100 text-slate-600'">
-                <span x-text="cat"></span>
-              </button>
+            <!-- Category pills (horizontal scroll) -->
+            <div class="mt-5 flex gap-3 overflow-x-auto pb-1">
+              <template x-for="cat in ['Beaches','Dining','Hotels','Nightlife','Hikes','Museums']" :key="cat">
+                <button
+                  @click="activeCat = cat"
+                  class="shrink-0 px-5 py-2 rounded-full text-sm whitespace-nowrap"
+                  :class="activeCat===cat ? 'bg-lime-500 text-white' : 'bg-slate-100 text-slate-600'">
+                  <span x-text="cat"></span>
+                </button>
+              </template>
+            </div>
+
+            <!-- Section helper -->
+            <template x-for="section in exploreSections" :key="section.title">
+              <div class="mt-8">
+                <div class="flex items-center mb-3">
+                  <h2 class="text-base font-semibold" x-text="section.title"></h2>
+                  <a href="#" class="ml-auto text-xs text-lime-600" @click.prevent="viewAll(section.title)">See All</a>
+                </div>
+
+                <!-- card list (horizontal on mobile / grid on larger) -->
+                <div
+                  class="flex gap-4 overflow-x-auto snap-x sm:grid sm:grid-cols-2 lg:grid-cols-3 sm:overflow-visible">
+
+                  <template x-for="card in section.items" :key="card.id">
+                    <article
+                      class="min-w-[220px] snap-center bg-white rounded-xl shadow-sm overflow-hidden
+                             sm:min-w-0 sm:w-full relative">
+                      <img :src="card.image" alt="" class="h-28 w-full object-cover">
+                      <div class="p-3">
+                        <h3 class="text-sm font-medium line-clamp-2" x-text="card.title"></h3>
+                        <p class="text-xs text-slate-500 mt-1" x-text="card.meta"></p>
+                      </div>
+                      <span
+                        class="absolute top-2 right-2 bg-white/80 backdrop-blur text-lime-600
+                               text-xs font-semibold rounded px-2 py-0.5">
+                        $<span x-text="card.price"></span>
+                      </span>
+                    </article>
+                  </template>
+                </div>
+              </div>
             </template>
           </div>
-
-          <!-- Section helper -->
-          <template x-for="section in exploreSections" :key="section.title">
-            <div class="mt-8">
-              <div class="flex items-center mb-3">
-                <h2 class="text-base font-semibold" x-text="section.title"></h2>
-                <a href="#" class="ml-auto text-xs text-lime-600" @click.prevent="viewAll(section.title)">See All</a>
-              </div>
-
-              <!-- card list (horizontal on mobile / grid on larger) -->
-              <div
-                class="flex gap-4 overflow-x-auto snap-x sm:grid sm:grid-cols-2 lg:grid-cols-3 sm:overflow-visible">
-
-                <template x-for="card in section.items" :key="card.id">
-                  <article
-                    class="min-w-[220px] snap-center bg-white rounded-xl shadow-sm overflow-hidden
-                           sm:min-w-0 sm:w-full relative">
-                    <img :src="card.image" alt="" class="h-28 w-full object-cover">
-                    <div class="p-3">
-                      <h3 class="text-sm font-medium line-clamp-2" x-text="card.title"></h3>
-                      <p class="text-xs text-slate-500 mt-1" x-text="card.meta"></p>
-                    </div>
-                    <span
-                      class="absolute top-2 right-2 bg-white/80 backdrop-blur text-lime-600
-                             text-xs font-semibold rounded px-2 py-0.5">
-                      $<span x-text="card.price"></span>
-                    </span>
-                  </article>
-                </template>
-              </div>
-            </div>
-          </template>
-        </div>
-      </section>
+        </section>
+      </div>
     </template>
 
     <!-- Chat View Template -->
