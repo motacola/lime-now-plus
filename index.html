@@ -916,31 +916,67 @@
             </div>
 
             <!-- Message Bubbles -->
-            <template x-for="(message, index) in messages" :key="index">
-              <!-- Assistant Message -->
-              <div
-                x-show="message.role === 'assistant'"
-                class="flex items-start max-w-[75%]"
-                :class="{'message-animation': message.animate}"
-              >
+            <div class="space-y-4">
+              <!-- Static Assistant Message 1 -->
+              <div class="flex items-start max-w-[75%]">
                 <div class="w-8 h-8 rounded-full bg-lime-100 flex-shrink-0 flex items-center justify-center mr-2">
                   <i class="lucide lucide-bot w-4 h-4 text-lime-600"></i>
                 </div>
                 <div class="bg-lime-100 rounded-2xl rounded-tl-none px-3 py-2 text-gray-800">
-                  <p class="text-sm whitespace-pre-wrap" x-text="message.text"></p>
+                  <p class="text-sm whitespace-pre-wrap">Hello! Welcome to Lime. How can I help you plan your perfect vacation today?</p>
                 </div>
               </div>
 
-              <!-- User Message -->
-              <div
-                x-show="message.role === 'user'"
-                class="flex items-start justify-end ml-auto max-w-[75%]"
-              >
+              <!-- Static User Message -->
+              <div class="flex items-start justify-end ml-auto max-w-[75%]">
                 <div class="bg-lime-500 text-white rounded-2xl rounded-tr-none px-3 py-2">
-                  <p class="text-sm whitespace-pre-wrap" x-text="message.text"></p>
+                  <p class="text-sm whitespace-pre-wrap">I'm looking for beach recommendations</p>
                 </div>
               </div>
-            </template>
+
+              <!-- Static Assistant Message 2 -->
+              <div class="flex items-start max-w-[75%]">
+                <div class="w-8 h-8 rounded-full bg-lime-100 flex-shrink-0 flex items-center justify-center mr-2">
+                  <i class="lucide lucide-bot w-4 h-4 text-lime-600"></i>
+                </div>
+                <div class="bg-lime-100 rounded-2xl rounded-tl-none px-3 py-2 text-gray-800">
+                  <p class="text-sm whitespace-pre-wrap">Great choice! Here are some amazing beaches you might enjoy:
+
+1. Crane Beach - Known for its pink sand and stunning cliffs
+2. Bathsheba Beach - Perfect for surfing and dramatic scenery
+3. Accra Beach - Family-friendly with calm waters
+
+Would you like more details about any of these?</p>
+                </div>
+              </div>
+
+              <!-- Dynamic Message Bubbles -->
+              <template x-for="(message, index) in messages.slice(3)" :key="index">
+                <!-- Assistant Message -->
+                <div
+                  x-show="message.role === 'assistant'"
+                  class="flex items-start max-w-[75%]"
+                  :class="{'message-animation': message.animate}"
+                >
+                  <div class="w-8 h-8 rounded-full bg-lime-100 flex-shrink-0 flex items-center justify-center mr-2">
+                    <i class="lucide lucide-bot w-4 h-4 text-lime-600"></i>
+                  </div>
+                  <div class="bg-lime-100 rounded-2xl rounded-tl-none px-3 py-2 text-gray-800">
+                    <p class="text-sm whitespace-pre-wrap" x-text="message.text"></p>
+                  </div>
+                </div>
+
+                <!-- User Message -->
+                <div
+                  x-show="message.role === 'user'"
+                  class="flex items-start justify-end ml-auto max-w-[75%]"
+                >
+                  <div class="bg-lime-500 text-white rounded-2xl rounded-tr-none px-3 py-2">
+                    <p class="text-sm whitespace-pre-wrap" x-text="message.text"></p>
+                  </div>
+                </div>
+              </template>
+            </div>
 
             <!-- Typing Indicator -->
             <div
@@ -995,18 +1031,18 @@
 
     <!-- BOTTOM NAV INSIDE FRAME -->
     <nav
-      x-data="{ tab: 'home' }"
+      x-data="{ tab: view }"
       class="absolute bottom-0 left-0 right-0 bg-white/95 backdrop-blur
              border-t border-slate-100 z-40">
       <ul class="grid grid-cols-4">
         <!-- Home -->
-        <li @click="tab='home'; view='dashboard'" class="relative py-2"
-            :class="tab==='home' ? 'text-lime-600' : 'text-slate-500'">
+        <li @click="tab='dashboard'; view='dashboard'" class="relative py-2"
+            :class="tab==='dashboard' ? 'text-lime-600' : 'text-slate-500'">
           <div class="flex flex-col items-center">
             <i class="lucide lucide-home w-5 h-5"></i>
             <span class="text-xs mt-0.5">Home</span>
           </div>
-          <span x-show="tab==='home'"
+          <span x-show="tab==='dashboard'"
                 class="absolute bottom-0 left-0 right-0 h-0.5 bg-lime-600"></span>
         </li>
 
