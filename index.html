@@ -1146,7 +1146,20 @@
 
     function chatComponent() {
       return {
-        messages: [],
+        messages: [
+          {
+            role: 'assistant',
+            text: 'Hello! Welcome to Lime. How can I help you plan your perfect vacation today?'
+          },
+          {
+            role: 'user',
+            text: 'I\'m looking for beach recommendations'
+          },
+          {
+            role: 'assistant',
+            text: 'Great choice! Here are some amazing beaches you might enjoy:\n\n1. Crane Beach - Known for its pink sand and stunning cliffs\n2. Bathsheba Beach - Perfect for surfing and dramatic scenery\n3. Accra Beach - Family-friendly with calm waters\n\nWould you like more details about any of these?'
+          }
+        ],
         draft: '',
         isTyping: false,
         autoScrollEnabled: true,
