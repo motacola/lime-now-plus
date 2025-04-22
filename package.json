@@ -1,0 +1,33 @@
+{
+  "name": "lime-now-plus-vite",
+  "version": "1.0.0",
+  "description": "Don't just visit. Lime like a local.",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "tourism",
+    "PWA",
+    "TailwindCSS",
+    "AlpineJS"
+  ],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@vitejs/plugin-legacy": "^5.2.0",
+    "autoprefixer": "^10.4.16",
+    "postcss": "^8.4.32",
+    "tailwindcss": "^3.4.0",
+    "vite-plugin-pwa": "^0.17.4",
+    "workbox-window": "^7.0.0"
+  },
+  "dependencies": {
+    "@neondatabase/serverless": "^1.0.0",
+    "alpinejs": "^3.13.3",
+    "vite": "^6.2.5"
+  }
+}
