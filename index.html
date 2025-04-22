@@ -784,150 +784,153 @@
 
     <!-- Chat View Template -->
     <template x-if="view === 'chat'">
-      <section id="chat" x-data="chatComponent()" class="h-full flex flex-col bg-gray-50">
-        <!-- Sticky Header -->
-        <header class="bg-white px-4 py-3 flex items-center justify-between border-b border-gray-200 z-10">
-          <div class="flex items-center gap-2">
-            <h2 class="text-lg font-semibold">Travel Assistant</h2>
-            <span
-              class="relative flex h-2.5 w-2.5"
-              :class="{'animate-pulse': isTyping}"
+      <div class="h-full overflow-y-auto pb-36 scrollbar scrollbar-thumb-slate-300 scrollbar-track-transparent overscroll-x-none">
+        <section id="chat" x-data="chatComponent()" class="h-full flex flex-col bg-gray-50">
+          <!-- Sticky Header -->
+          <header class="sticky top-0 z-10 bg-white px-4 py-3 flex items-center justify-between border-b border-gray-200">
+            <div class="flex items-center gap-2">
+              <h2 class="text-lg font-semibold">Travel Assistant</h2>
+              <span
+                class="relative flex h-2.5 w-2.5"
+                :class="{'animate-pulse': isTyping}"
+              >
+                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-lime-400 opacity-75"></span>
+                <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-lime-500"></span>
+              </span>
+            </div>
+            <button
+              @click="clearChat()"
+              class="text-gray-500 hover:text-gray-700 text-sm font-medium"
+              x-show="messages.length > 0"
             >
-              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-lime-400 opacity-75"></span>
-              <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-lime-500"></span>
-            </span>
-          </div>
-          <button
-            @click="clearChat()"
-            class="text-gray-500 hover:text-gray-700 text-sm font-medium"
-            x-show="messages.length > 0"
+              Clear
+            </button>
+          </header>
+
+          <!-- Message Thread -->
+          <div
+            class="flex-1 overflow-y-auto p-4 space-y-4 scrollbar scrollbar-thumb-slate-300 scrollbar-track-transparent overscroll-x-none"
+            x-ref="messageContainer"
+            @scroll="checkScroll()"
+            style="height: calc(100% - 120px);"
           >
-            Clear
-          </button>
-        </header>
-
-        <!-- Message Thread -->
-        <div
-          class="flex-1 overflow-y-auto p-4 space-y-4 scrollbar scrollbar-thumb-slate-300 scrollbar-track-transparent overscroll-x-none"
-          x-ref="messageContainer"
-          @scroll="checkScroll()"
-        >
-          <!-- Empty State with Suggestions -->
-          <div x-show="messages.length === 0" class="h-full flex flex-col justify-center items-center space-y-6">
-            <div class="text-center px-4">
-              <div class="w-16 h-16 bg-lime-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <i class="lucide lucide-message-square-text w-8 h-8 text-lime-600"></i>
+            <!-- Empty State with Suggestions -->
+            <div x-show="messages.length === 0" class="h-full flex flex-col justify-center items-center space-y-6">
+              <div class="text-center px-4">
+                <div class="w-16 h-16 bg-lime-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <i class="lucide lucide-message-square-text w-8 h-8 text-lime-600"></i>
+                </div>
+                <h3 class="font-medium text-gray-800 mb-1">How can I help you today?</h3>
+                <p class="text-sm text-gray-500">Ask me anything about travel, activities, or local recommendations.</p>
               </div>
-              <h3 class="font-medium text-gray-800 mb-1">How can I help you today?</h3>
-              <p class="text-sm text-gray-500">Ask me anything about travel, activities, or local recommendations.</p>
-            </div>
 
-            <!-- Suggested Quick Actions -->
-            <div class="w-full overflow-x-auto hide-scrollbar pb-2">
-              <div class="flex space-x-3 px-4">
-                <button
-                  @click="sendQuickAction('Find top beaches')"
-                  class="whitespace-nowrap px-3 py-2 bg-white border border-gray-200 rounded-lg text-sm text-gray-700 shadow-sm hover:bg-gray-50"
-                >
-                  Find top beaches
-                </button>
-                <button
-                  @click="sendQuickAction('Nearby events tonight')"
-                  class="whitespace-nowrap px-3 py-2 bg-white border border-gray-200 rounded-lg text-sm text-gray-700 shadow-sm hover:bg-gray-50"
-                >
-                  Nearby events tonight
-                </button>
-                <button
-                  @click="sendQuickAction('Budget-friendly tours')"
-                  class="whitespace-nowrap px-3 py-2 bg-white border border-gray-200 rounded-lg text-sm text-gray-700 shadow-sm hover:bg-gray-50"
-                >
-                  Budget-friendly tours
-                </button>
-                <button
-                  @click="sendQuickAction('Show my favourites')"
-                  class="whitespace-nowrap px-3 py-2 bg-white border border-gray-200 rounded-lg text-sm text-gray-700 shadow-sm hover:bg-gray-50"
-                >
-                  Show my favourites
-                </button>
+              <!-- Suggested Quick Actions -->
+              <div class="w-full overflow-x-auto hide-scrollbar pb-2">
+                <div class="flex space-x-3 px-4">
+                  <button
+                    @click="sendQuickAction('Find top beaches')"
+                    class="whitespace-nowrap px-3 py-2 bg-white border border-gray-200 rounded-lg text-sm text-gray-700 shadow-sm hover:bg-gray-50"
+                  >
+                    Find top beaches
+                  </button>
+                  <button
+                    @click="sendQuickAction('Nearby events tonight')"
+                    class="whitespace-nowrap px-3 py-2 bg-white border border-gray-200 rounded-lg text-sm text-gray-700 shadow-sm hover:bg-gray-50"
+                  >
+                    Nearby events tonight
+                  </button>
+                  <button
+                    @click="sendQuickAction('Budget-friendly tours')"
+                    class="whitespace-nowrap px-3 py-2 bg-white border border-gray-200 rounded-lg text-sm text-gray-700 shadow-sm hover:bg-gray-50"
+                  >
+                    Budget-friendly tours
+                  </button>
+                  <button
+                    @click="sendQuickAction('Show my favourites')"
+                    class="whitespace-nowrap px-3 py-2 bg-white border border-gray-200 rounded-lg text-sm text-gray-700 shadow-sm hover:bg-gray-50"
+                  >
+                    Show my favourites
+                  </button>
+                </div>
               </div>
             </div>
-          </div>
 
-          <!-- Message Bubbles -->
-          <template x-for="(message, index) in messages" :key="index">
-            <!-- Assistant Message -->
+            <!-- Message Bubbles -->
+            <template x-for="(message, index) in messages" :key="index">
+              <!-- Assistant Message -->
+              <div
+                x-show="message.role === 'assistant'"
+                class="flex items-start max-w-[75%]"
+                :class="{'message-animation': message.animate}"
+              >
+                <div class="w-8 h-8 rounded-full bg-lime-100 flex-shrink-0 flex items-center justify-center mr-2">
+                  <i class="lucide lucide-bot w-4 h-4 text-lime-600"></i>
+                </div>
+                <div class="bg-lime-100 rounded-2xl rounded-tl-none px-3 py-2 text-gray-800">
+                  <p class="text-sm whitespace-pre-wrap" x-text="message.text"></p>
+                </div>
+              </div>
+
+              <!-- User Message -->
+              <div
+                x-show="message.role === 'user'"
+                class="flex items-start justify-end ml-auto max-w-[75%]"
+              >
+                <div class="bg-lime-500 text-white rounded-2xl rounded-tr-none px-3 py-2">
+                  <p class="text-sm whitespace-pre-wrap" x-text="message.text"></p>
+                </div>
+              </div>
+            </template>
+
+            <!-- Typing Indicator -->
             <div
-              x-show="message.role === 'assistant'"
-              class="flex items-start max-w-[75%]"
-              :class="{'message-animation': message.animate}"
+              x-show="isTyping"
+              class="flex items-start max-w-[75%] message-animation"
             >
               <div class="w-8 h-8 rounded-full bg-lime-100 flex-shrink-0 flex items-center justify-center mr-2">
                 <i class="lucide lucide-bot w-4 h-4 text-lime-600"></i>
               </div>
-              <div class="bg-lime-100 rounded-2xl rounded-tl-none px-3 py-2 text-gray-800">
-                <p class="text-sm whitespace-pre-wrap" x-text="message.text"></p>
-              </div>
-            </div>
-
-            <!-- User Message -->
-            <div
-              x-show="message.role === 'user'"
-              class="flex items-start justify-end ml-auto max-w-[75%]"
-            >
-              <div class="bg-lime-500 text-white rounded-2xl rounded-tr-none px-3 py-2">
-                <p class="text-sm whitespace-pre-wrap" x-text="message.text"></p>
-              </div>
-            </div>
-          </template>
-
-          <!-- Typing Indicator -->
-          <div
-            x-show="isTyping"
-            class="flex items-start max-w-[75%] message-animation"
-          >
-            <div class="w-8 h-8 rounded-full bg-lime-100 flex-shrink-0 flex items-center justify-center mr-2">
-              <i class="lucide lucide-bot w-4 h-4 text-lime-600"></i>
-            </div>
-            <div class="bg-lime-100 rounded-2xl rounded-tl-none px-4 py-3 text-gray-800">
-              <div class="flex space-x-1">
-                <div class="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
-                <div class="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
-                <div class="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style="animation-delay: 0.4s"></div>
+              <div class="bg-lime-100 rounded-2xl rounded-tl-none px-4 py-3 text-gray-800">
+                <div class="flex space-x-1">
+                  <div class="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
+                  <div class="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
+                  <div class="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style="animation-delay: 0.4s"></div>
+                </div>
               </div>
             </div>
           </div>
-        </div>
 
-        <!-- Input Footer -->
-        <div class="bg-white border-t border-gray-200 p-3">
-          <div class="flex items-end gap-2">
-            <div class="relative flex-1 min-h-10">
-              <textarea
-                x-model="draft"
-                @input="autoGrow($event.target)"
-                @keydown.enter.prevent="sendToAI()"
-                placeholder="Type a message..."
-                class="w-full border border-gray-300 rounded-lg px-3 py-2 pr-10 focus:outline-none focus:ring-2 focus:ring-lime-500 focus:border-transparent resize-none max-h-32 text-sm"
-                rows="1"
-              ></textarea>
+          <!-- Input Footer -->
+          <div class="bg-white border-t border-gray-200 p-3 absolute bottom-[56px] left-0 right-0">
+            <div class="flex items-end gap-2">
+              <div class="relative flex-1 min-h-10">
+                <textarea
+                  x-model="draft"
+                  @input="autoGrow($event.target)"
+                  @keydown.enter.prevent="sendToAI()"
+                  placeholder="Type a message..."
+                  class="w-full border border-gray-300 rounded-lg px-3 py-2 pr-10 focus:outline-none focus:ring-2 focus:ring-lime-500 focus:border-transparent resize-none max-h-32 text-sm"
+                  rows="1"
+                ></textarea>
+                <button
+                  class="absolute right-2 bottom-2 text-gray-400 hover:text-gray-600"
+                  title="Voice input (coming soon)"
+                >
+                  <i class="lucide lucide-mic w-5 h-5"></i>
+                </button>
+              </div>
               <button
-                class="absolute right-2 bottom-2 text-gray-400 hover:text-gray-600"
-                title="Voice input (coming soon)"
+                @click="sendToAI()"
+                :disabled="!draft.trim()"
+                :class="draft.trim() ? 'bg-lime-500 hover:bg-lime-600' : 'bg-gray-300 cursor-not-allowed'"
+                class="rounded-full p-2.5 text-white flex-shrink-0"
               >
-                <i class="lucide lucide-mic w-5 h-5"></i>
+                <i class="lucide lucide-send w-5 h-5"></i>
               </button>
             </div>
-            <button
-              @click="sendToAI()"
-              :disabled="!draft.trim()"
-              :class="draft.trim() ? 'bg-lime-500 hover:bg-lime-600' : 'bg-gray-300 cursor-not-allowed'"
-              class="rounded-full p-2.5 text-white flex-shrink-0"
-            >
-              <i class="lucide lucide-send w-5 h-5"></i>
-            </button>
           </div>
-        </div>
-      </section>
+        </section>
+      </div>
     </template>
 
     <!-- BOTTOM NAV INSIDE FRAME -->
