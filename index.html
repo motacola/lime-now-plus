@@ -697,12 +697,15 @@
     <!-- Explore View Template -->
     <template x-if="view === 'explore'">
       <!-- EXPLORE PAGE -->
-      <div class="h-full overflow-y-auto pb-36 scrollbar scrollbar-thumb-slate-300 scrollbar-track-transparent overscroll-x-none">
-        <section id="explore" x-data="explorePage()" class="h-full flex flex-col">
+      <div class="h-full overflow-y-auto pb-36 scrollbar scrollbar-thumb-slate-300 scrollbar-track-transparent overscroll-none overscroll-x-none">
+        <section id="explore" x-data="explorePage()" x-init="init()" class="h-full flex flex-col">
 
           <!-- Sticky header --------------------------------------->
-          <header class="sticky top-0 z-10 bg-white/95 backdrop-blur px-4 pt-4 pb-3 flex items-center gap-2">
+          <header class="sticky top-0 z-10 bg-white/95 backdrop-blur px-4 pt-4 pb-3 flex items-center gap-3">
             <h1 class="text-lg font-semibold flex-1">Explore</h1>
+            <button @click="toggleMapView()" class="relative p-1.5 rounded-full" :class="showMapView ? 'bg-lime-100 text-lime-600' : ''">
+              <i class="lucide lucide-map w-5 h-5"></i>
+            </button>
             <button class="relative">
               <i class="lucide lucide-bell w-5 h-5"></i>
               <span class="absolute -top-1 -right-1 w-4 h-4 bg-rose-500 text-[10px] font-bold text-white rounded-full flex items-center justify-center">2</span>
@@ -714,114 +717,161 @@
 
             <!-- Search bar -->
             <div class="relative">
-              <input type="text" placeholder="Search destinations, activities..."
+              <input type="text" placeholder="Search destinations, activities..." x-model="searchQuery"
                      class="w-full border border-slate-200 rounded-xl py-2.5 pl-10 pr-3 text-sm focus:outline-none focus:ring-2 focus:ring-lime-500">
               <i class="lucide lucide-search w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
+              <button x-show="searchQuery" @click="searchQuery = ''" class="absolute right-3 top-1/2 -translate-y-1/2">
+                <i class="lucide lucide-x w-4 h-4 text-slate-400"></i>
+              </button>
             </div>
 
-            <!-- Category pills (horizontal scroll) -->
-            <div class="mt-5 flex gap-3 overflow-x-auto pb-1">
-              <template x-for="cat in ['Beaches','Dining','Hotels','Nightlife','Hikes','Museums']" :key="cat">
-                <button
-                  @click="activeCat = cat"
-                  class="shrink-0 px-5 py-2 rounded-full text-sm whitespace-nowrap"
-                  :class="activeCat===cat ? 'bg-lime-500 text-white' : 'bg-slate-100 text-slate-600'">
-                  <span x-text="cat"></span>
-                </button>
+            <!-- Search Results (only shown when searching) -->
+            <div x-show="searchQuery.trim().length > 0" class="mt-4">
+              <h2 class="text-base font-semibold mb-3">Search Results</h2>
+              <div x-show="searchResults().length === 0" class="text-center py-8 text-slate-500">
+                <i class="lucide lucide-search-x w-8 h-8 mx-auto mb-2"></i>
+                <p>No results found for "<span x-text="searchQuery"></span>"</p>
+              </div>
+              <div x-show="searchResults().length > 0" class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                <template x-for="item in searchResults()" :key="item.id">
+                  <article class="bg-white rounded-xl shadow-sm overflow-hidden relative">
+                    <img :src="item.image" :alt="item.title" class="h-28 w-full object-cover">
+                    <div class="p-3">
+                      <h3 class="text-sm font-medium line-clamp-2" x-text="item.title"></h3>
+                      <p class="text-xs text-slate-500 mt-1" x-text="item.meta"></p>
+                    </div>
+                    <button @click="toggleFavorite(item.id)" class="absolute top-2 left-2 bg-white/80 backdrop-blur rounded-full p-1.5">
+                      <i class="lucide lucide-heart w-4 h-4" :class="item.isFavorite ? 'text-rose-500 fill-rose-500' : 'text-slate-400'"></i>
+                    </button>
+                    <button @click="viewDetails(item.id)" class="absolute bottom-2 right-2 bg-lime-500 text-white rounded-full p-1.5">
+                      <i class="lucide lucide-arrow-right w-4 h-4"></i>
+                    </button>
+                    <span class="absolute top-2 right-2 bg-white/80 backdrop-blur text-lime-600 text-xs font-semibold rounded px-2 py-0.5" x-text="item.price === 0 ? 'Free' : (item.price === 'Varies' ? 'Varies' : '$' + item.price)"></span>
+                  </article>
+                </template>
+              </div>
+            </div>
+
+            <!-- Main content (hidden when searching) -->
+            <div x-show="!searchQuery.trim()">
+              <!-- Category pills (horizontal scroll) -->
+              <div class="mt-5 flex gap-3 overflow-x-auto pb-1">
+                <template x-for="cat in categories" :key="cat.id">
+                  <button
+                    @click="activeCat = cat.name"
+                    class="shrink-0 px-5 py-2 rounded-full text-sm whitespace-nowrap flex items-center gap-1.5"
+                    :class="activeCat===cat.name ? 'bg-lime-500 text-white' : 'bg-slate-100 text-slate-600'">
+                    <i :class="'lucide lucide-' + cat.icon + ' w-4 h-4'"></i>
+                    <span x-text="cat.name"></span>
+                  </button>
+                </template>
+              </div>
+
+              <!-- Map View (conditionally shown) -->
+              <div x-show="showMapView" class="mt-5">
+                <div class="bg-slate-100 rounded-xl h-64 flex items-center justify-center">
+                  <div class="text-center">
+                    <i class="lucide lucide-map w-8 h-8 mx-auto mb-2 text-slate-400"></i>
+                    <p class="text-slate-500">Interactive map coming soon</p>
+                    <p class="text-xs text-slate-400 mt-1">Explore all locations visually</p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Sections (filtered by category) -->
+              <template x-for="section in filteredSections()" :key="section.title">
+                <div class="mt-8">
+                  <div class="flex items-center mb-3">
+                    <h2 class="text-base font-semibold" x-text="section.title"></h2>
+                    <a href="#" class="ml-auto text-xs text-lime-600" @click.prevent="viewAll(section.title)">See All</a>
+                  </div>
+
+                  <!-- card list (horizontal on mobile / grid on larger) -->
+                  <div class="flex gap-4 overflow-x-auto snap-x sm:grid sm:grid-cols-2 lg:grid-cols-3 sm:overflow-visible">
+                    <template x-for="item in section.items" :key="item.id">
+                      <article class="min-w-[220px] snap-center bg-white rounded-xl shadow-sm overflow-hidden sm:min-w-0 sm:w-full relative">
+                        <img :src="item.image" :alt="item.title" class="h-28 w-full object-cover">
+                        <div class="p-3">
+                          <h3 class="text-sm font-medium line-clamp-2" x-text="item.title"></h3>
+                          <p class="text-xs text-slate-500 mt-1" x-text="item.meta"></p>
+                        </div>
+                        <button @click="toggleFavorite(item.id)" class="absolute top-2 left-2 bg-white/80 backdrop-blur rounded-full p-1.5">
+                          <i class="lucide lucide-heart w-4 h-4" :class="item.isFavorite ? 'text-rose-500 fill-rose-500' : 'text-slate-400'"></i>
+                        </button>
+                        <button @click="viewDetails(item.id)" class="absolute bottom-2 right-2 bg-lime-500 text-white rounded-full p-1.5">
+                          <i class="lucide lucide-arrow-right w-4 h-4"></i>
+                        </button>
+                        <span class="absolute top-2 right-2 bg-white/80 backdrop-blur text-lime-600 text-xs font-semibold rounded px-2 py-0.5" x-text="item.price === 0 ? 'Free' : (item.price === 'Varies' ? 'Varies' : '$' + item.price)"></span>
+                      </article>
+                    </template>
+                  </div>
+                </div>
               </template>
             </div>
+          </div>
 
-            <!-- Popular Destinations Section -->
-            <div class="mt-8">
-              <div class="flex items-center mb-3">
-                <h2 class="text-base font-semibold">Popular Destinations</h2>
-                <a href="#" class="ml-auto text-xs text-lime-600" @click.prevent="viewAll('Popular Destinations')">See All</a>
+          <!-- Item Detail Modal -->
+          <div x-show="showDetailModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50" @click.self="showDetailModal = false">
+            <div x-show="showDetailModal" x-transition class="bg-white rounded-xl w-full max-w-md max-h-[90vh] overflow-y-auto">
+              <div x-show="selectedItem" class="relative">
+                <img :src="selectedItem?.image" :alt="selectedItem?.title" class="w-full h-48 object-cover">
+                <button @click="showDetailModal = false" class="absolute top-2 right-2 bg-white/80 backdrop-blur rounded-full p-2">
+                  <i class="lucide lucide-x w-5 h-5"></i>
+                </button>
+                <button @click="toggleFavorite(selectedItem?.id)" class="absolute top-2 left-2 bg-white/80 backdrop-blur rounded-full p-2">
+                  <i class="lucide lucide-heart w-5 h-5" :class="selectedItem?.isFavorite ? 'text-rose-500 fill-rose-500' : 'text-slate-400'"></i>
+                </button>
               </div>
+              <div class="p-4">
+                <div class="flex justify-between items-start">
+                  <h2 class="text-xl font-semibold" x-text="selectedItem?.title"></h2>
+                  <span class="bg-lime-100 text-lime-600 text-sm font-semibold rounded px-2 py-0.5" x-text="selectedItem?.price === 0 ? 'Free' : (selectedItem?.price === 'Varies' ? 'Varies' : '$' + selectedItem?.price)"></span>
+                </div>
+                <p class="text-sm text-slate-500 mt-1" x-text="selectedItem?.meta"></p>
 
-              <!-- card list (horizontal on mobile / grid on larger) -->
-              <div class="flex gap-4 overflow-x-auto snap-x sm:grid sm:grid-cols-2 lg:grid-cols-3 sm:overflow-visible">
-                <!-- Crane Beach -->
-                <article class="min-w-[220px] snap-center bg-white rounded-xl shadow-sm overflow-hidden sm:min-w-0 sm:w-full relative">
-                  <img src="https://images.unsplash.com/photo-1590523277543-a94d2e4eb00b?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1000&q=80" alt="" class="h-28 w-full object-cover">
-                  <div class="p-3">
-                    <h3 class="text-sm font-medium line-clamp-2">Crane Beach</h3>
-                    <p class="text-xs text-slate-500 mt-1">Beach • 4.9 ★</p>
+                <div class="mt-4">
+                  <h3 class="text-sm font-medium mb-2">Description</h3>
+                  <p class="text-sm text-slate-600" x-text="selectedItem?.description"></p>
+                </div>
+
+                <div class="mt-4 flex items-center justify-between">
+                  <div>
+                    <h3 class="text-sm font-medium mb-1">Reviews</h3>
+                    <div class="flex items-center">
+                      <div class="flex">
+                        <i class="lucide lucide-star w-4 h-4 text-amber-400 fill-amber-400"></i>
+                        <i class="lucide lucide-star w-4 h-4 text-amber-400 fill-amber-400"></i>
+                        <i class="lucide lucide-star w-4 h-4 text-amber-400 fill-amber-400"></i>
+                        <i class="lucide lucide-star w-4 h-4 text-amber-400 fill-amber-400"></i>
+                        <i class="lucide lucide-star-half w-4 h-4 text-amber-400 fill-amber-400"></i>
+                      </div>
+                      <span class="text-xs text-slate-500 ml-1" x-text="selectedItem?.reviews + ' reviews'"></span>
+                    </div>
                   </div>
-                  <span class="absolute top-2 right-2 bg-white/80 backdrop-blur text-lime-600 text-xs font-semibold rounded px-2 py-0.5">$0</span>
-                </article>
-
-                <!-- Bridgetown -->
-                <article class="min-w-[220px] snap-center bg-white rounded-xl shadow-sm overflow-hidden sm:min-w-0 sm:w-full relative">
-                  <img src="https://images.unsplash.com/photo-1580674684081-7617fbf3d745?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1000&q=80" alt="" class="h-28 w-full object-cover">
-                  <div class="p-3">
-                    <h3 class="text-sm font-medium line-clamp-2">Bridgetown</h3>
-                    <p class="text-xs text-slate-500 mt-1">City • 4.7 ★</p>
+                  <div x-show="selectedItem?.time">
+                    <h3 class="text-sm font-medium mb-1">Schedule</h3>
+                    <p class="text-xs text-slate-500" x-text="selectedItem?.time"></p>
                   </div>
-                  <span class="absolute top-2 right-2 bg-white/80 backdrop-blur text-lime-600 text-xs font-semibold rounded px-2 py-0.5">$0</span>
-                </article>
+                </div>
 
-                <!-- Harrison's Cave -->
-                <article class="min-w-[220px] snap-center bg-white rounded-xl shadow-sm overflow-hidden sm:min-w-0 sm:w-full relative">
-                  <img src="https://images.unsplash.com/photo-1583966855405-ac213b2c5293?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1000&q=80" alt="" class="h-28 w-full object-cover">
-                  <div class="p-3">
-                    <h3 class="text-sm font-medium line-clamp-2">Harrison's Cave</h3>
-                    <p class="text-xs text-slate-500 mt-1">Attraction • 4.8 ★</p>
-                  </div>
-                  <span class="absolute top-2 right-2 bg-white/80 backdrop-blur text-lime-600 text-xs font-semibold rounded px-2 py-0.5">$25</span>
-                </article>
-
-                <!-- Bathsheba Beach -->
-                <article class="min-w-[220px] snap-center bg-white rounded-xl shadow-sm overflow-hidden sm:min-w-0 sm:w-full relative">
-                  <img src="https://images.unsplash.com/photo-1597900931464-dcea5e80d935?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1000&q=80" alt="" class="h-28 w-full object-cover">
-                  <div class="p-3">
-                    <h3 class="text-sm font-medium line-clamp-2">Bathsheba Beach</h3>
-                    <p class="text-xs text-slate-500 mt-1">Beach • 4.6 ★</p>
-                  </div>
-                  <span class="absolute top-2 right-2 bg-white/80 backdrop-blur text-lime-600 text-xs font-semibold rounded px-2 py-0.5">$0</span>
-                </article>
-              </div>
-            </div>
-
-            <!-- Trending Activities Section -->
-            <div class="mt-8">
-              <div class="flex items-center mb-3">
-                <h2 class="text-base font-semibold">Trending Activities</h2>
-                <a href="#" class="ml-auto text-xs text-lime-600" @click.prevent="viewAll('Trending Activities')">See All</a>
-              </div>
-
-              <!-- card list (horizontal on mobile / grid on larger) -->
-              <div class="flex gap-4 overflow-x-auto snap-x sm:grid sm:grid-cols-2 lg:grid-cols-3 sm:overflow-visible">
-                <!-- Sunset Catamaran Cruise -->
-                <article class="min-w-[220px] snap-center bg-white rounded-xl shadow-sm overflow-hidden sm:min-w-0 sm:w-full relative">
-                  <img src="https://images.unsplash.com/photo-1544551763-92ab472cad5d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1000&q=80" alt="" class="h-28 w-full object-cover">
-                  <div class="p-3">
-                    <h3 class="text-sm font-medium line-clamp-2">Sunset Catamaran Cruise</h3>
-                    <p class="text-xs text-slate-500 mt-1">2 hours • 4.9 ★</p>
-                  </div>
-                  <span class="absolute top-2 right-2 bg-white/80 backdrop-blur text-lime-600 text-xs font-semibold rounded px-2 py-0.5">$65</span>
-                </article>
-
-                <!-- Snorkeling Adventure -->
-                <article class="min-w-[220px] snap-center bg-white rounded-xl shadow-sm overflow-hidden sm:min-w-0 sm:w-full relative">
-                  <img src="https://images.unsplash.com/photo-1583296365129-6a4eee1b5de7?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1000&q=80" alt="" class="h-28 w-full object-cover">
-                  <div class="p-3">
-                    <h3 class="text-sm font-medium line-clamp-2">Snorkeling Adventure</h3>
-                    <p class="text-xs text-slate-500 mt-1">3 hours • 4.8 ★</p>
-                  </div>
-                  <span class="absolute top-2 right-2 bg-white/80 backdrop-blur text-lime-600 text-xs font-semibold rounded px-2 py-0.5">$45</span>
-                </article>
-
-                <!-- Rum Distillery Tour -->
-                <article class="min-w-[220px] snap-center bg-white rounded-xl shadow-sm overflow-hidden sm:min-w-0 sm:w-full relative">
-                  <img src="https://images.unsplash.com/photo-1565073624497-7e91b5cc3843?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1000&q=80" alt="" class="h-28 w-full object-cover">
-                  <div class="p-3">
-                    <h3 class="text-sm font-medium line-clamp-2">Rum Distillery Tour</h3>
-                    <p class="text-xs text-slate-500 mt-1">1.5 hours • 4.7 ★</p>
-                  </div>
-                  <span class="absolute top-2 right-2 bg-white/80 backdrop-blur text-lime-600 text-xs font-semibold rounded px-2 py-0.5">$35</span>
-                </article>
+                <div class="mt-6 flex gap-2">
+                  <button class="flex-1 bg-lime-500 text-white py-2.5 rounded-lg font-medium text-sm">Book Now</button>
+                  <button class="bg-slate-100 text-slate-600 p-2.5 rounded-lg">
+                    <i class="lucide lucide-share-2 w-5 h-5"></i>
+                  </button>
+                </div>
               </div>
             </div>
+          </div>
+
+          <!-- Toast Notification -->
+          <div x-data="{ show: false, message: '' }"
+               x-show="show"
+               x-transition
+               x-on:show-notification.window="show = true; message = $event.detail.message; setTimeout(() => show = false, 3000)"
+               class="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 bg-lime-500 text-white px-4 py-2 rounded-lg shadow-lg flex items-center space-x-2 max-w-[90%]">
+            <i class="lucide lucide-check-circle w-5 h-5"></i>
+            <span x-text="message"></span>
           </div>
         </section>
       </div>
@@ -990,7 +1040,21 @@ function chatComponent () {
 
     function explorePage() {
       return {
-        activeCat: 'Beaches',
+        activeCat: 'All',
+        searchQuery: '',
+        showDetailModal: false,
+        selectedItem: null,
+        showMapView: false,
+        categories: [
+          { id: 'all', name: 'All', icon: 'layers' },
+          { id: 'beaches', name: 'Beaches', icon: 'waves' },
+          { id: 'dining', name: 'Dining', icon: 'utensils' },
+          { id: 'hotels', name: 'Hotels', icon: 'hotel' },
+          { id: 'nightlife', name: 'Nightlife', icon: 'music' },
+          { id: 'hikes', name: 'Hikes', icon: 'mountain' },
+          { id: 'museums', name: 'Museums', icon: 'landmark' },
+          { id: 'events', name: 'Events', icon: 'calendar' }
+        ],
         exploreSections: [
           {
             title: 'Popular Destinations',
@@ -1000,28 +1064,72 @@ function chatComponent () {
                 title: 'Crane Beach',
                 image: 'https://images.unsplash.com/photo-1590523277543-a94d2e4eb00b?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1000&q=80',
                 meta: 'Beach • 4.9 ★',
-                price: 0
+                price: 0,
+                category: 'beaches',
+                description: 'One of the most beautiful beaches in the Caribbean, with pink-tinged sand and crystal clear waters. Perfect for swimming and sunbathing.',
+                location: { lat: 13.1073, lng: -59.4428 },
+                reviews: 128,
+                isFavorite: false
               },
               {
                 id: 'bridgetown',
                 title: 'Bridgetown',
                 image: 'https://images.unsplash.com/photo-1580674684081-7617fbf3d745?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1000&q=80',
                 meta: 'City • 4.7 ★',
-                price: 0
+                price: 0,
+                category: 'museums',
+                description: 'The capital city of Barbados, featuring colonial architecture, vibrant markets, and historic sites. Don\'t miss the Parliament Buildings and National Heroes Square.',
+                location: { lat: 13.1132, lng: -59.5988 },
+                reviews: 95,
+                isFavorite: false
               },
               {
                 id: 'harrison-cave',
                 title: 'Harrison's Cave',
                 image: 'https://images.unsplash.com/photo-1583966855405-ac213b2c5293?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1000&q=80',
                 meta: 'Attraction • 4.8 ★',
-                price: 25
+                price: 25,
+                category: 'hikes',
+                description: 'An underground wonder with crystallized limestone, flowing streams, and deep pools. Take a tram tour through this magnificent cave system.',
+                location: { lat: 13.1957, lng: -59.5772 },
+                reviews: 203,
+                isFavorite: false
               },
               {
                 id: 'bathsheba',
                 title: 'Bathsheba Beach',
                 image: 'https://images.unsplash.com/photo-1597900931464-dcea5e80d935?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1000&q=80',
                 meta: 'Beach • 4.6 ★',
-                price: 0
+                price: 0,
+                category: 'beaches',
+                description: 'Known for its dramatic rock formations and excellent surfing conditions. The "Soup Bowl" is a favorite spot for professional surfers.',
+                location: { lat: 13.2142, lng: -59.5269 },
+                reviews: 87,
+                isFavorite: false
+              },
+              {
+                id: 'oistins',
+                title: 'Oistins Fish Fry',
+                image: 'https://images.unsplash.com/photo-1603073163308-9654c3fb70b5?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1000&q=80',
+                meta: 'Dining • 4.9 ★',
+                price: 15,
+                category: 'dining',
+                description: 'The famous Friday night fish fry is a must-visit for fresh seafood, live music, and local culture. Try the grilled mahi-mahi or flying fish.',
+                location: { lat: 13.0622, lng: -59.5464 },
+                reviews: 312,
+                isFavorite: false
+              },
+              {
+                id: 'animal-flower-cave',
+                title: 'Animal Flower Cave',
+                image: 'https://images.unsplash.com/photo-1596402184320-417e7178b2cd?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1000&q=80',
+                meta: 'Attraction • 4.5 ★',
+                price: 20,
+                category: 'hikes',
+                description: 'Located at the northernmost point of Barbados, this sea cave features natural rock pools and stunning ocean views.',
+                location: { lat: 13.3302, lng: -59.8186 },
+                reviews: 76,
+                isFavorite: false
               }
             ]
           },
@@ -1033,26 +1141,222 @@ function chatComponent () {
                 title: 'Sunset Catamaran Cruise',
                 image: 'https://images.unsplash.com/photo-1544551763-92ab472cad5d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1000&q=80',
                 meta: '2 hours • 4.9 ★',
-                price: 65
+                price: 65,
+                category: 'events',
+                description: 'Sail along the coast of Barbados on a luxury catamaran. Enjoy snorkeling with sea turtles, an open bar, and a beautiful Caribbean sunset.',
+                location: { lat: 13.0746, lng: -59.6134 },
+                reviews: 245,
+                isFavorite: false,
+                time: '5:30 PM daily'
               },
               {
                 id: 'snorkeling',
                 title: 'Snorkeling Adventure',
                 image: 'https://images.unsplash.com/photo-1583296365129-6a4eee1b5de7?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1000&q=80',
                 meta: '3 hours • 4.8 ★',
-                price: 45
+                price: 45,
+                category: 'events',
+                description: 'Explore vibrant coral reefs and swim with tropical fish and sea turtles. Equipment and instruction provided for all skill levels.',
+                location: { lat: 13.1668, lng: -59.6397 },
+                reviews: 178,
+                isFavorite: false,
+                time: '10:00 AM & 2:00 PM'
               },
               {
                 id: 'rum-tour',
                 title: 'Rum Distillery Tour',
                 image: 'https://images.unsplash.com/photo-1565073624497-7e91b5cc3843?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1000&q=80',
                 meta: '1.5 hours • 4.7 ★',
-                price: 35
+                price: 35,
+                category: 'dining',
+                description: 'Visit the Mount Gay Rum Distillery, the oldest rum producer in the world. Learn about the rum-making process and enjoy a guided tasting.',
+                location: { lat: 13.1119, lng: -59.6209 },
+                reviews: 156,
+                isFavorite: false,
+                time: '11:00 AM & 3:00 PM'
+              },
+              {
+                id: 'jeep-safari',
+                title: 'Island Jeep Safari',
+                image: 'https://images.unsplash.com/photo-1533144042276-397b3241b9ee?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1000&q=80',
+                meta: '5 hours • 4.6 ★',
+                price: 85,
+                category: 'hikes',
+                description: 'Explore the rugged terrain and hidden gems of Barbados in a 4x4 jeep. Visit scenic viewpoints, local villages, and off-the-beaten-path locations.',
+                location: { lat: 13.1667, lng: -59.5500 },
+                reviews: 132,
+                isFavorite: false,
+                time: '9:00 AM daily'
+              },
+              {
+                id: 'cooking-class',
+                title: 'Bajan Cooking Class',
+                image: 'https://images.unsplash.com/photo-1556910103-1c02745aae4d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1000&q=80',
+                meta: '3 hours • 4.9 ★',
+                price: 55,
+                category: 'dining',
+                description: 'Learn to prepare traditional Barbadian dishes with a local chef. Includes market visit, cooking instruction, and a delicious meal with rum punch.',
+                location: { lat: 13.0935, lng: -59.6105 },
+                reviews: 89,
+                isFavorite: false,
+                time: '10:00 AM Tue, Thu, Sat'
+              }
+            ]
+          },
+          {
+            title: 'Local Experiences',
+            items: [
+              {
+                id: 'crop-over',
+                title: 'Crop Over Festival',
+                image: 'https://images.unsplash.com/photo-1541535650810-10d26f5c2ab3?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1000&q=80',
+                meta: 'Event • 5.0 ★',
+                price: 'Varies',
+                category: 'events',
+                description: 'Barbados\' biggest cultural celebration with music, dance, and colorful costumes. Culminates in the Grand Kadooment Day parade.',
+                location: { lat: 13.1054, lng: -59.6143 },
+                reviews: 427,
+                isFavorite: false,
+                time: 'July-August annually'
+              },
+              {
+                id: 'fish-market',
+                title: 'Bridgetown Fish Market',
+                image: 'https://images.unsplash.com/photo-1579191203631-5108e8df0ddf?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1000&q=80',
+                meta: 'Market • 4.5 ★',
+                price: 0,
+                category: 'dining',
+                description: 'Experience the vibrant atmosphere of a traditional Caribbean fish market. Watch fishermen bring in their daily catch and interact with local vendors.',
+                location: { lat: 13.1060, lng: -59.6187 },
+                reviews: 68,
+                isFavorite: false,
+                time: '6:00 AM - 11:00 AM daily'
+              },
+              {
+                id: 'pottery-studio',
+                title: 'Earthworks Pottery Studio',
+                image: 'https://images.unsplash.com/photo-1565539383096-8905a1c5a971?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1000&q=80',
+                meta: 'Art • 4.7 ★',
+                price: 15,
+                category: 'museums',
+                description: 'Visit a working pottery studio where you can watch artisans create beautiful handmade ceramics. Includes a guided tour and optional workshop.',
+                location: { lat: 13.1435, lng: -59.5950 },
+                reviews: 92,
+                isFavorite: false,
+                time: '9:00 AM - 4:00 PM Mon-Sat'
               }
             ]
           }
         ],
-        viewAll(title) { alert(`TODO: Show all for ${title}`) }
+        // Filter items based on active category
+        filteredSections() {
+          if (this.activeCat === 'All') {
+            return this.exploreSections;
+          }
+
+          return this.exploreSections.map(section => {
+            return {
+              title: section.title,
+              items: section.items.filter(item =>
+                item.category.toLowerCase() === this.activeCat.toLowerCase()
+              )
+            };
+          }).filter(section => section.items.length > 0);
+        },
+
+        // Search functionality
+        searchResults() {
+          if (!this.searchQuery.trim()) {
+            return [];
+          }
+
+          const query = this.searchQuery.toLowerCase();
+          const results = [];
+
+          this.exploreSections.forEach(section => {
+            section.items.forEach(item => {
+              if (
+                item.title.toLowerCase().includes(query) ||
+                item.description.toLowerCase().includes(query) ||
+                item.category.toLowerCase().includes(query)
+              ) {
+                results.push(item);
+              }
+            });
+          });
+
+          return results;
+        },
+
+        // Toggle favorite status
+        toggleFavorite(itemId) {
+          this.exploreSections.forEach(section => {
+            const item = section.items.find(i => i.id === itemId);
+            if (item) {
+              item.isFavorite = !item.isFavorite;
+
+              // Show notification
+              this.$dispatch('show-notification', {
+                message: item.isFavorite ?
+                  `Added ${item.title} to favorites` :
+                  `Removed ${item.title} from favorites`
+              });
+            }
+          });
+        },
+
+        // View item details
+        viewDetails(itemId) {
+          let foundItem = null;
+
+          this.exploreSections.forEach(section => {
+            const item = section.items.find(i => i.id === itemId);
+            if (item) {
+              foundItem = item;
+            }
+          });
+
+          if (foundItem) {
+            this.selectedItem = foundItem;
+            this.showDetailModal = true;
+          }
+        },
+
+        // View all items in a section
+        viewAll(title) {
+          const section = this.exploreSections.find(s => s.title === title);
+          if (section) {
+            this.selectedSection = section;
+            this.showAllModal = true;
+          }
+        },
+
+        // Toggle map view
+        toggleMapView() {
+          this.showMapView = !this.showMapView;
+        },
+
+        // Initialize
+        init() {
+          // Check for saved favorites
+          const savedFavorites = localStorage.getItem('lime-favorites');
+          if (savedFavorites) {
+            const favorites = JSON.parse(savedFavorites);
+
+            this.exploreSections.forEach(section => {
+              section.items.forEach(item => {
+                if (favorites.includes(item.id)) {
+                  item.isFavorite = true;
+                }
+              });
+            });
+          }
+
+          // Listen for notification events
+          this.$watch('showDetailModal', (value) => {
+            document.body.style.overflow = value ? 'hidden' : '';
+          });
+        }
       };
     }
 
