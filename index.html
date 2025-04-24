@@ -698,7 +698,7 @@
     <template x-if="view === 'explore'">
       <!-- EXPLORE PAGE - SIMPLIFIED VERSION -->
       <div class="h-full overflow-y-auto pb-36 scrollbar scrollbar-thumb-slate-300 scrollbar-track-transparent overscroll-none overscroll-x-none">
-        <section id="explore" x-data="explorePageSimple()" class="h-full flex flex-col">
+        <section id="explore" x-data="explorePageSimple()" x-init="init()" class="h-full flex flex-col">
 
           <!-- Sticky header -->
           <header class="sticky top-0 z-10 bg-white/95 backdrop-blur px-4 pt-4 pb-3 flex items-center gap-3">
@@ -746,8 +746,8 @@
                     <h3 class="text-sm font-medium line-clamp-2">Crane Beach</h3>
                     <p class="text-xs text-slate-500 mt-1">Beach • 4.9 ★</p>
                   </div>
-                  <button class="absolute top-2 left-2 bg-white/80 backdrop-blur rounded-full p-1.5">
-                    <i class="lucide lucide-heart w-4 h-4 text-slate-400"></i>
+                  <button @click="toggleFavorite('crane-beach')" class="absolute top-2 left-2 bg-white/80 backdrop-blur rounded-full p-1.5">
+                    <i class="lucide lucide-heart w-4 h-4" :class="isFavorite('crane-beach') ? 'text-rose-500 fill-rose-500' : 'text-slate-400'"></i>
                   </button>
                   <span class="absolute top-2 right-2 bg-white/80 backdrop-blur text-lime-600 text-xs font-semibold rounded px-2 py-0.5">Free</span>
                 </article>
@@ -759,8 +759,8 @@
                     <h3 class="text-sm font-medium line-clamp-2">Bridgetown</h3>
                     <p class="text-xs text-slate-500 mt-1">City • 4.7 ★</p>
                   </div>
-                  <button class="absolute top-2 left-2 bg-white/80 backdrop-blur rounded-full p-1.5">
-                    <i class="lucide lucide-heart w-4 h-4 text-slate-400"></i>
+                  <button @click="toggleFavorite('bridgetown')" class="absolute top-2 left-2 bg-white/80 backdrop-blur rounded-full p-1.5">
+                    <i class="lucide lucide-heart w-4 h-4" :class="isFavorite('bridgetown') ? 'text-rose-500 fill-rose-500' : 'text-slate-400'"></i>
                   </button>
                   <span class="absolute top-2 right-2 bg-white/80 backdrop-blur text-lime-600 text-xs font-semibold rounded px-2 py-0.5">Free</span>
                 </article>
@@ -772,8 +772,8 @@
                     <h3 class="text-sm font-medium line-clamp-2">Harrison's Cave</h3>
                     <p class="text-xs text-slate-500 mt-1">Attraction • 4.8 ★</p>
                   </div>
-                  <button class="absolute top-2 left-2 bg-white/80 backdrop-blur rounded-full p-1.5">
-                    <i class="lucide lucide-heart w-4 h-4 text-slate-400"></i>
+                  <button @click="toggleFavorite('harrison-cave')" class="absolute top-2 left-2 bg-white/80 backdrop-blur rounded-full p-1.5">
+                    <i class="lucide lucide-heart w-4 h-4" :class="isFavorite('harrison-cave') ? 'text-rose-500 fill-rose-500' : 'text-slate-400'"></i>
                   </button>
                   <span class="absolute top-2 right-2 bg-white/80 backdrop-blur text-lime-600 text-xs font-semibold rounded px-2 py-0.5">$25</span>
                 </article>
@@ -796,8 +796,8 @@
                     <h3 class="text-sm font-medium line-clamp-2">Sunset Catamaran Cruise</h3>
                     <p class="text-xs text-slate-500 mt-1">2 hours • 4.9 ★</p>
                   </div>
-                  <button class="absolute top-2 left-2 bg-white/80 backdrop-blur rounded-full p-1.5">
-                    <i class="lucide lucide-heart w-4 h-4 text-slate-400"></i>
+                  <button @click="toggleFavorite('catamaran')" class="absolute top-2 left-2 bg-white/80 backdrop-blur rounded-full p-1.5">
+                    <i class="lucide lucide-heart w-4 h-4" :class="isFavorite('catamaran') ? 'text-rose-500 fill-rose-500' : 'text-slate-400'"></i>
                   </button>
                   <span class="absolute top-2 right-2 bg-white/80 backdrop-blur text-lime-600 text-xs font-semibold rounded px-2 py-0.5">$65</span>
                 </article>
@@ -809,8 +809,8 @@
                     <h3 class="text-sm font-medium line-clamp-2">Snorkeling Adventure</h3>
                     <p class="text-xs text-slate-500 mt-1">3 hours • 4.8 ★</p>
                   </div>
-                  <button class="absolute top-2 left-2 bg-white/80 backdrop-blur rounded-full p-1.5">
-                    <i class="lucide lucide-heart w-4 h-4 text-slate-400"></i>
+                  <button @click="toggleFavorite('snorkeling')" class="absolute top-2 left-2 bg-white/80 backdrop-blur rounded-full p-1.5">
+                    <i class="lucide lucide-heart w-4 h-4" :class="isFavorite('snorkeling') ? 'text-rose-500 fill-rose-500' : 'text-slate-400'"></i>
                   </button>
                   <span class="absolute top-2 right-2 bg-white/80 backdrop-blur text-lime-600 text-xs font-semibold rounded px-2 py-0.5">$45</span>
                 </article>
@@ -822,8 +822,8 @@
                     <h3 class="text-sm font-medium line-clamp-2">Rum Distillery Tour</h3>
                     <p class="text-xs text-slate-500 mt-1">1.5 hours • 4.7 ★</p>
                   </div>
-                  <button class="absolute top-2 left-2 bg-white/80 backdrop-blur rounded-full p-1.5">
-                    <i class="lucide lucide-heart w-4 h-4 text-slate-400"></i>
+                  <button @click="toggleFavorite('rum-tour')" class="absolute top-2 left-2 bg-white/80 backdrop-blur rounded-full p-1.5">
+                    <i class="lucide lucide-heart w-4 h-4" :class="isFavorite('rum-tour') ? 'text-rose-500 fill-rose-500' : 'text-slate-400'"></i>
                   </button>
                   <span class="absolute top-2 right-2 bg-white/80 backdrop-blur text-lime-600 text-xs font-semibold rounded px-2 py-0.5">$35</span>
                 </article>
@@ -846,8 +846,8 @@
                     <h3 class="text-sm font-medium line-clamp-2">Crop Over Festival</h3>
                     <p class="text-xs text-slate-500 mt-1">Event • 5.0 ★</p>
                   </div>
-                  <button class="absolute top-2 left-2 bg-white/80 backdrop-blur rounded-full p-1.5">
-                    <i class="lucide lucide-heart w-4 h-4 text-slate-400"></i>
+                  <button @click="toggleFavorite('crop-over')" class="absolute top-2 left-2 bg-white/80 backdrop-blur rounded-full p-1.5">
+                    <i class="lucide lucide-heart w-4 h-4" :class="isFavorite('crop-over') ? 'text-rose-500 fill-rose-500' : 'text-slate-400'"></i>
                   </button>
                   <span class="absolute top-2 right-2 bg-white/80 backdrop-blur text-lime-600 text-xs font-semibold rounded px-2 py-0.5">Varies</span>
                 </article>
@@ -859,13 +859,21 @@
                     <h3 class="text-sm font-medium line-clamp-2">Bridgetown Fish Market</h3>
                     <p class="text-xs text-slate-500 mt-1">Market • 4.5 ★</p>
                   </div>
-                  <button class="absolute top-2 left-2 bg-white/80 backdrop-blur rounded-full p-1.5">
-                    <i class="lucide lucide-heart w-4 h-4 text-slate-400"></i>
+                  <button @click="toggleFavorite('fish-market')" class="absolute top-2 left-2 bg-white/80 backdrop-blur rounded-full p-1.5">
+                    <i class="lucide lucide-heart w-4 h-4" :class="isFavorite('fish-market') ? 'text-rose-500 fill-rose-500' : 'text-slate-400'"></i>
                   </button>
                   <span class="absolute top-2 right-2 bg-white/80 backdrop-blur text-lime-600 text-xs font-semibold rounded px-2 py-0.5">Free</span>
                 </article>
               </div>
             </div>
+          </div>
+
+          <!-- Toast Notification -->
+          <div x-show="notificationVisible"
+               x-transition
+               class="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 bg-lime-500 text-white px-4 py-2 rounded-lg shadow-lg flex items-center space-x-2 max-w-[90%]">
+            <i class="lucide lucide-check-circle w-5 h-5"></i>
+            <span x-text="notificationMessage"></span>
           </div>
         </section>
       </div>
@@ -1054,10 +1062,52 @@ function chatComponent () {
       };
     }
 
-    // Simple version for testing
+    // Simple version with basic interactivity
     function explorePageSimple() {
       return {
-        // Empty object - just for initialization
+        // Favorites functionality
+        favorites: [],
+
+        // Toggle favorite status
+        toggleFavorite(id) {
+          if (this.favorites.includes(id)) {
+            this.favorites = this.favorites.filter(item => item !== id);
+            this.showNotification(`Removed from favorites`);
+          } else {
+            this.favorites.push(id);
+            this.showNotification(`Added to favorites`);
+          }
+
+          // Save to localStorage
+          localStorage.setItem('lime-favorites', JSON.stringify(this.favorites));
+        },
+
+        // Check if item is favorited
+        isFavorite(id) {
+          return this.favorites.includes(id);
+        },
+
+        // Show notification
+        notificationVisible: false,
+        notificationMessage: '',
+        showNotification(message) {
+          this.notificationMessage = message;
+          this.notificationVisible = true;
+
+          // Hide after 3 seconds
+          setTimeout(() => {
+            this.notificationVisible = false;
+          }, 3000);
+        },
+
+        // Initialize
+        init() {
+          // Load favorites from localStorage
+          const savedFavorites = localStorage.getItem('lime-favorites');
+          if (savedFavorites) {
+            this.favorites = JSON.parse(savedFavorites);
+          }
+        }
       };
     }
 
