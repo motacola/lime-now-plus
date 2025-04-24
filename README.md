@@ -2,7 +2,7 @@
 
 Don't just visit. Lime like a local.
 
-A mobile app interface prototype for "Lime Now+" - a tourism/local experience app.
+A progressive web app (PWA) for "Lime Now+" - a tourism/local experience app.
 
 ## Features
 
@@ -14,55 +14,95 @@ A mobile app interface prototype for "Lime Now+" - a tourism/local experience ap
 - Dark mode support
 - Accessibility improvements
 - Responsive design
+- Offline functionality (PWA)
 
 ## Technologies Used
 
-- HTML5
+- Vite build system
 - TailwindCSS for styling
 - Alpine.js for interactivity
+- PWA capabilities for offline access
+- Component-based architecture
 - LocalStorage for data persistence
 
 ## Project Structure
 
 ```plaintext
-lime-now-plus/
-├── index.html        # Main HTML file
-├── css/
-│   └── styles.css    # Extracted CSS styles
-├── js/
-│   └── app.js        # Alpine.js components and functionality
-├── components/       # For future component extraction
-├── views/            # For future view templates
-├── assets/           # For images and other static assets
+lime-now-plus-vite/
+├── index.html        # Main HTML entry point
+├── public/           # Public static assets
+│   └── manifest.webmanifest  # PWA manifest
+├── src/              # Source code
+│   ├── css/          # CSS styles
+│   │   └── styles.css # Main CSS file with Tailwind directives
+│   ├── js/           # JavaScript files
+│   │   └── app.js    # Main Alpine.js application
+│   ├── components/   # Alpine.js components
+│   │   └── Dashboard.js # Dashboard component
+│   └── views/        # View templates
+├── vite.config.js    # Vite configuration with PWA support
+├── tailwind.config.js # Tailwind CSS configuration
 └── README.md         # This file
+```
+
+## Getting Started
+
+### Prerequisites
+
+- Node.js (v14+)
+- npm or yarn
+
+### Installation
+
+```bash
+# Clone the repository
+git clone https://github.com/yourusername/lime-now-plus.git
+cd lime-now-plus-vite
+
+# Install dependencies
+npm install
+
+# Start the development server
+npm run dev
+```
+
+Visit `http://localhost:5173` to view the application.
+
+## Building for Production
+
+```bash
+npm run build
+```
+
+The built application will be available in the `dist` directory.
+
+## Preview Production Build
+
+```bash
+npm run preview
 ```
 
 ## Improvements Made
 
-- **Code Organization**: Split CSS and JS into separate files
-- **Component Structure**: Implemented Alpine.js components for better organization
+- **Code Organization**: Implemented component-based architecture
+- **Performance**: Set up Vite build system for optimized assets
+- **PWA Support**: Added service worker for offline access
 - **Form Validation**: Added client-side validation for login form
-- **Accessibility**: Added ARIA attributes and improved keyboard navigation
-- **Performance**: Used x-if instead of x-show for views to reduce DOM size
-- **Dark Mode**: Added dark mode toggle with persistent preference
-- **Animation Fixes**: Resolved animation conflicts and improved transitions
-
-## How to Run
-
-Simply open the `index.html` file in a web browser or serve it using a local web server:
-
-```bash
-# Using Python's built-in HTTP server
-python -m http.server
-
-# Or using any other local server of your choice
-```
+- **Accessibility**: Improved ARIA attributes and keyboard navigation
+- **Dark Mode**: Added persistent dark mode preference
 
 ## Future Improvements
 
-- Add a proper router for better navigation
 - Connect to a backend service (Firebase/Supabase)
-- Implement PWA capabilities for offline use
 - Add more comprehensive form validation
-- Create a fully componentized architecture
 - Implement proper authentication flow
+- Add more views and functionality
+- Enhance offline capabilities with better caching strategies
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+## License
+
+This project is licensed under the ISC License.

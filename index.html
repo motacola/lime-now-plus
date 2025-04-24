@@ -1052,11 +1052,63 @@ function chatComponent () {
             ]
           }
         ],
-        viewAll(title) { alert(`TODO: Show all for ${title}`) }
+        viewAll(title) {
+          this.selectedCategory = title;
+          this.showAllModal = true;
+        }
       };
     }
 
     // Chat component is now defined inline in the template
+    // --- Auth and View All Modal State ---
+    selectedCategory: null,
+    showAllModal: false,
+    // --- Auth handlers ---
+    async signup() {
+      try {
+        const res = await fetch('/api/signup', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: this.email, password: this.password })
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Signup failed');
+        this.notificationMessage = 'Signup successful!';
+        this.showNotification = true;
+        this.view = 'login';
+      } catch (err) {
+        this.notificationMessage = err.message;
+        this.showNotification = true;
+      }
+    },
+    async login() {
+      try {
+        const res = await fetch('/api/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: this.email, password: this.password })
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Login failed');
+        this.notificationMessage = 'Logged in!';
+        this.showNotification = true;
+        this.view = 'dashboard';
+      } catch (err) {
+        this.notificationMessage = err.message;
+        this.showNotification = true;
+      }
+    },
+    async logout() {
+      try {
+        await fetch('/api/logout', { method: 'POST' });
+        this.view = 'login';
+        this.notificationMessage = 'Logged out';
+        this.showNotification = true;
+      } catch (err) {
+        this.notificationMessage = 'Logout failed';
+        this.showNotification = true;
+      }
+    }
   </script>
 
   <script src="https://cdn.jsdelivr.net/npm/tailwind-scrollbar@3.3.5/dist/index.min.js"></script>

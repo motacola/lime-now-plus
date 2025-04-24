@@ -1,0 +1,299 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom Styles */
+body {
+  font-family: 'Inter', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Animations and transitions */
+.fade-in {
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.pulse-on-hover:hover {
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+.spinner {
+  border: 3px solid rgba(229, 231, 235, 0.3);
+  border-radius: 50%;
+  border-top: 3px solid #84cc16;
+  width: 2rem;
+  height: 2rem;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.shimmer {
+  background: linear-gradient(90deg, #f3f4f6 0%, #e5e7eb 50%, #f3f4f6 100%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+/* Layout Components */
+.app-navigation {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: white;
+  border-top: 1px solid #e5e7eb;
+  padding: 0.75rem 1rem;
+  z-index: 10;
+  margin: 0 5px 5px 5px;
+  border-radius: 0 0 1.5rem 1.5rem;
+  box-shadow: 0 -1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.menu-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem 0.5rem;
+  border-radius: 0.75rem;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.menu-item:hover {
+  background-color: #f3f4f6;
+  transform: translateY(-2px);
+}
+
+.menu-item.active {
+  color: #65a30d;
+  background-color: #ecfccb;
+}
+
+.menu-item.active::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 30%;
+  right: 30%;
+  height: 3px;
+  background: #65a30d;
+  border-radius: 3px 3px 0 0;
+}
+
+.menu-icon {
+  width: 1.75rem;
+  height: 1.75rem;
+  margin-bottom: 0.25rem;
+  transition: all 0.2s;
+}
+
+.menu-item:hover .menu-icon {
+  transform: scale(1.1);
+}
+
+.menu-item.active .menu-icon {
+  color: #65a30d;
+  filter: drop-shadow(0 0 1px rgba(101, 163, 13, 0.5));
+}
+
+.menu-item span {
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.menu-item.active span {
+  font-weight: 600;
+}
+
+/* Hide scrollbar but maintain scroll functionality */
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Enhanced card styles */
+.card {
+  @apply bg-white rounded-2xl shadow-md overflow-hidden;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.card:hover {
+  @apply shadow-lg;
+  transform: translateY(-2px);
+}
+
+/* Button styles */
+.btn {
+  @apply rounded-lg font-medium transition duration-200;
+}
+
+.btn-primary {
+  @apply bg-gradient-to-r from-lime-500 to-lime-600 hover:from-lime-600 hover:to-lime-700 text-white shadow-sm;
+}
+
+.btn-secondary {
+  @apply bg-lime-100 hover:bg-lime-200 text-lime-700;
+}
+
+/* Form element styles */
+input[type="text"],
+input[type="email"],
+input[type="password"],
+textarea {
+  @apply transition duration-200;
+}
+
+/* Enhanced notification styles */
+.notification {
+  @apply bg-lime-500 text-white px-4 py-2 rounded-lg shadow-lg flex items-center space-x-2;
+  animation: slideDown 0.3s ease-out forwards;
+}
+
+@keyframes slideDown {
+  from { transform: translateY(-100%); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+/* Enhanced text styles */
+.heading-1 {
+  @apply text-xl font-bold text-lime-800;
+}
+
+.heading-2 {
+  @apply text-lg font-semibold text-gray-800;
+}
+
+.subtext {
+  @apply text-xs text-gray-500;
+}
+
+/* Gradient backgrounds */
+.bg-gradient-primary {
+  @apply bg-gradient-to-r from-lime-500 to-lime-600;
+}
+
+.bg-gradient-secondary {
+  @apply bg-gradient-to-r from-lime-50 to-lime-100;
+}
+
+/* Responsive adjustments */
+@media (min-width: 400px) {
+  .w-\[360px\] {
+    width: 360px !important;
+  }
+  
+  .h-\[640px\] {
+    height: 640px !important; 
+  }
+}
+
+/* Base styles */
+body {
+  font-family: 'Inter', sans-serif;
+}
+
+/* Dashboard components */
+.dashboard-card {
+  @apply bg-white dark:bg-gray-800 rounded-xl shadow-md p-4 transition-all duration-200;
+}
+
+.dashboard-card:hover {
+  @apply shadow-lg transform scale-[1.02];
+}
+
+/* Navigation */
+nav.app-navigation {
+  @apply w-full absolute bottom-0 left-0 right-0 pt-3 border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800;
+  max-width: 100%; 
+  border-bottom-left-radius: inherit;
+  border-bottom-right-radius: inherit;
+}
+
+/* Phone container */
+.phone-container {
+  @apply relative overflow-hidden;
+  height: calc(100% - 20px);
+}
+
+/* Main content area */
+.main-content {
+  @apply overflow-auto pb-16; /* Add padding bottom to prevent content from being hidden under navigation */
+  height: calc(100% - 50px); /* Adjust height to account for header */
+}
+
+/* Mobile styles */
+@media (max-width: 640px) {
+  html {
+    font-size: 14px;
+  }
+  
+  body > div:first-of-type {
+    max-width: 100% !important;
+    max-height: 100vh !important;
+    width: 100% !important;
+    height: 100vh !important;
+    transform: none !important;
+    border-radius: 0 !important;
+    border: none !important;
+    padding: 10px !important;
+  }
+}
+
+/* Mobile-specific features */
+@media (hover: none) {
+  .pulse-on-hover:hover {
+    animation: none;
+  }
+  
+  button:active {
+    transform: scale(0.95);
+  }
+}
+
+/* Utility classes */
+.status-bar-height {
+  height: env(safe-area-inset-top, 0px);
+}
+
+.bottom-inset {
+  padding-bottom: env(safe-area-inset-bottom, 16px);
+}
+
+/* PWA Install prompt */
+.install-prompt {
+  @apply fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-800 p-4 shadow-lg rounded-t-xl border-t border-gray-200 dark:border-gray-700 z-50;
+  animation: slideUp 0.3s ease-out;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+} 

@@ -1,0 +1,43 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom styles */
+.fade-in {
+  @apply transition-opacity duration-300 ease-in-out;
+}
+
+.pulse-on-hover {
+  @apply transition-transform duration-300 ease-in-out;
+}
+
+.pulse-on-hover:hover {
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+/* Dark mode */
+.dark .bg-white {
+  @apply bg-gray-900;
+}
+
+.dark .text-gray-800 {
+  @apply text-gray-100;
+}
+
+.dark .text-gray-600 {
+  @apply text-gray-400;
+}
+
+.dark .bg-lime-50 {
+  @apply bg-lime-900;
+}
+
+.dark .bg-gray-100 {
+  @apply bg-gray-800;
+} 
