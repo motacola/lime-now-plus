@@ -11,10 +11,10 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="manifest" href="/manifest.webmanifest">
 </head>
-<body class="flex justify-center bg-lime-50 overflow-x-hidden min-h-screen font-sans">
+<body class="h-full bg-gray-100 dark:bg-gray-900 overflow-x-hidden flex justify-center">
   <div x-data="app" x-init="init()">
-    <!-- Phone Frame (scroll container) -->
-    <div id="phone" class="relative w-[340px] h-[640px] rounded-3xl overflow-hidden shadow-xl bg-white">
+    <!-- Phone frame now centred by the flex parent above -->
+    <div id="phone" class="relative w-[360px] h-[640px] bg-white border border-lime-200 rounded-3xl shadow-2xl overflow-hidden">
       <!-- Status Bar -->
       <div class="absolute top-0 left-0 right-0 flex justify-between items-center px-6 py-2 text-xs text-gray-700 bg-white bg-opacity-80 backdrop-blur-sm z-10">
         <div x-text="currentTime"></div>
@@ -827,192 +827,83 @@
       </div>
     </template>
 
-    <!-- Chat View Template -->
-    <template x-if="view === 'chat'">
-      <div class="h-full overflow-y-auto pb-36 scrollbar scrollbar-thumb-slate-300 scrollbar-track-transparent overscroll-x-none">
-        <section id="chat" x-data="chatComponent()" class="h-full flex flex-col bg-gray-50">
-          <!-- Sticky Header -->
-          <header class="sticky top-0 z-10 bg-white px-4 py-3 flex items-center justify-between border-b border-gray-200">
-            <div class="flex items-center gap-2">
-              <h2 class="text-lg font-semibold">Travel Assistant</h2>
-              <span
-                class="relative flex h-2.5 w-2.5"
-                :class="{'animate-pulse': isTyping}"
-              >
-                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-lime-400 opacity-75"></span>
-                <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-lime-500"></span>
-              </span>
-            </div>
-            <button
-              @click="clearChat()"
-              class="text-gray-500 hover:text-gray-700 text-sm font-medium"
-              x-show="messages.length > 0"
-            >
-              Clear
-            </button>
-          </header>
+<!-- CHAT / Travel Assistant -->
+<template x-if="view === 'chat'">
+  <section x-data="chatComponent()"
+           class="h-full flex flex-col fade-in">
 
-          <!-- Message Thread -->
-          <div
-            class="flex-1 overflow-y-auto p-4 space-y-4 scrollbar scrollbar-thumb-slate-300 scrollbar-track-transparent overscroll-x-none"
-            x-ref="messageContainer"
-            @scroll="checkScroll()"
-            style="height: calc(100% - 120px);"
-          >
-            <!-- Empty State with Suggestions -->
-            <div x-show="messages.length === 0" class="h-full flex flex-col justify-center items-center space-y-6">
-              <div class="text-center px-4">
-                <div class="w-16 h-16 bg-lime-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <i class="lucide lucide-message-square-text w-8 h-8 text-lime-600"></i>
-                </div>
-                <h3 class="font-medium text-gray-800 mb-1">How can I help you today?</h3>
-                <p class="text-sm text-gray-500">Ask me anything about travel, activities, or local recommendations.</p>
-              </div>
+    <!-- Header -->
+    <header class="flex items-center justify-center gap-2 py-3 border-b">
+      <h1 class="text-base font-semibold">Travel Assistant</h1>
+      <span x-show="typing"
+            class="w-2 h-2 bg-lime-600 rounded-full animate-ping-slow"></span>
+    </header>
 
-              <!-- Suggested Quick Actions -->
-              <div class="w-full overflow-x-auto hide-scrollbar pb-2">
-                <div class="flex space-x-3 px-4">
-                  <button
-                    @click="sendQuickAction('Find top beaches')"
-                    class="whitespace-nowrap px-3 py-2 bg-white border border-gray-200 rounded-lg text-sm text-gray-700 shadow-sm hover:bg-gray-50"
-                  >
-                    Find top beaches
-                  </button>
-                  <button
-                    @click="sendQuickAction('Nearby events tonight')"
-                    class="whitespace-nowrap px-3 py-2 bg-white border border-gray-200 rounded-lg text-sm text-gray-700 shadow-sm hover:bg-gray-50"
-                  >
-                    Nearby events tonight
-                  </button>
-                  <button
-                    @click="sendQuickAction('Budget-friendly tours')"
-                    class="whitespace-nowrap px-3 py-2 bg-white border border-gray-200 rounded-lg text-sm text-gray-700 shadow-sm hover:bg-gray-50"
-                  >
-                    Budget-friendly tours
-                  </button>
-                  <button
-                    @click="sendQuickAction('Show my favourites')"
-                    class="whitespace-nowrap px-3 py-2 bg-white border border-gray-200 rounded-lg text-sm text-gray-700 shadow-sm hover:bg-gray-50"
-                  >
-                    Show my favourites
-                  </button>
-                </div>
-              </div>
-            </div>
+    <!-- Thread -->
+    <div id="thread"
+         class="flex-1 overflow-y-auto px-4 py-4 space-y-4
+                scrollbar scrollbar-thumb-slate-300 overscroll-x-none">
+      <template x-if="messages.length===0">
+        <div class="flex gap-3 overflow-x-auto pb-1">
+          <template x-for="q in quickActions" :key="q">
+            <button @click="draft=q; send()"
+                    class="px-4 py-2 bg-lime-100 rounded-full text-xs shrink-0"
+                    x-text="q"></button>
+          </template>
+        </div>
+      </template>
 
-            <!-- Message Bubbles -->
-            <div class="space-y-4">
-              <!-- Static Assistant Message 1 -->
-              <div class="flex items-start max-w-[75%]">
-                <div class="w-8 h-8 rounded-full bg-lime-100 flex-shrink-0 flex items-center justify-center mr-2">
-                  <i class="lucide lucide-bot w-4 h-4 text-lime-600"></i>
-                </div>
-                <div class="bg-lime-100 rounded-2xl rounded-tl-none px-3 py-2 text-gray-800">
-                  <p class="text-sm whitespace-pre-wrap">Hello! Welcome to Lime. How can I help you plan your perfect vacation today?</p>
-                </div>
-              </div>
+      <template x-for="msg in messages" :key="msg.id">
+        <div :class="msg.role==='user' ? 'flex justify-end' : 'flex justify-start'">
+          <div :class="msg.role==='user'
+                        ? 'bg-lime-600 text-white ml-8'
+                        : 'bg-slate-100 text-slate-800 mr-8'"
+               class="rounded-2xl px-3 py-2 max-w-[75%] text-sm whitespace-pre-line"
+               x-text="msg.text"></div>
+        </div>
+      </template>
+    </div>
 
-              <!-- Static User Message -->
-              <div class="flex items-start justify-end ml-auto max-w-[75%]">
-                <div class="bg-lime-500 text-white rounded-2xl rounded-tr-none px-3 py-2">
-                  <p class="text-sm whitespace-pre-wrap">I'm looking for beach recommendations</p>
-                </div>
-              </div>
+    <!-- Input bar -->
+    <form @submit.prevent="send()" class="border-t px-4 py-3 flex gap-2">
+      <textarea x-model="draft" rows="1"
+                placeholder="Type a message…"
+                class="flex-1 resize-none bg-gray-100 border-none rounded-full
+                       py-3 px-4 text-sm focus:ring-2 focus:ring-lime-400"></textarea>
+      <button type="submit"
+              :disabled="!draft.trim()"
+              class="bg-lime-500 text-white px-4 py-2 rounded-lg
+                     disabled:opacity-40">Send</button>
+    </form>
+  </section>
+</template>
 
-              <!-- Static Assistant Message 2 -->
-              <div class="flex items-start max-w-[75%]">
-                <div class="w-8 h-8 rounded-full bg-lime-100 flex-shrink-0 flex items-center justify-center mr-2">
-                  <i class="lucide lucide-bot w-4 h-4 text-lime-600"></i>
-                </div>
-                <div class="bg-lime-100 rounded-2xl rounded-tl-none px-3 py-2 text-gray-800">
-                  <p class="text-sm whitespace-pre-wrap">Great choice! Here are some amazing beaches you might enjoy:
-
-1. Crane Beach - Known for its pink sand and stunning cliffs
-2. Bathsheba Beach - Perfect for surfing and dramatic scenery
-3. Accra Beach - Family-friendly with calm waters
-
-Would you like more details about any of these?</p>
-                </div>
-              </div>
-
-              <!-- Dynamic Message Bubbles -->
-              <template x-for="(message, index) in messages.slice(3)" :key="index">
-                <!-- Assistant Message -->
-                <div
-                  x-show="message.role === 'assistant'"
-                  class="flex items-start max-w-[75%]"
-                  :class="{'message-animation': message.animate}"
-                >
-                  <div class="w-8 h-8 rounded-full bg-lime-100 flex-shrink-0 flex items-center justify-center mr-2">
-                    <i class="lucide lucide-bot w-4 h-4 text-lime-600"></i>
-                  </div>
-                  <div class="bg-lime-100 rounded-2xl rounded-tl-none px-3 py-2 text-gray-800">
-                    <p class="text-sm whitespace-pre-wrap" x-text="message.text"></p>
-                  </div>
-                </div>
-
-                <!-- User Message -->
-                <div
-                  x-show="message.role === 'user'"
-                  class="flex items-start justify-end ml-auto max-w-[75%]"
-                >
-                  <div class="bg-lime-500 text-white rounded-2xl rounded-tr-none px-3 py-2">
-                    <p class="text-sm whitespace-pre-wrap" x-text="message.text"></p>
-                  </div>
-                </div>
-              </template>
-            </div>
-
-            <!-- Typing Indicator -->
-            <div
-              x-show="isTyping"
-              class="flex items-start max-w-[75%] message-animation"
-            >
-              <div class="w-8 h-8 rounded-full bg-lime-100 flex-shrink-0 flex items-center justify-center mr-2">
-                <i class="lucide lucide-bot w-4 h-4 text-lime-600"></i>
-              </div>
-              <div class="bg-lime-100 rounded-2xl rounded-tl-none px-4 py-3 text-gray-800">
-                <div class="flex space-x-1">
-                  <div class="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
-                  <div class="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
-                  <div class="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style="animation-delay: 0.4s"></div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Input Footer -->
-          <div class="bg-white border-t border-gray-200 p-3 absolute bottom-[56px] left-0 right-0">
-            <div class="flex items-end gap-2">
-              <div class="relative flex-1 min-h-10">
-                <textarea
-                  x-model="draft"
-                  @input="autoGrow($event.target)"
-                  @keydown.enter.prevent="sendToAI()"
-                  placeholder="Type a message..."
-                  class="w-full border border-gray-300 rounded-lg px-3 py-2 pr-10 focus:outline-none focus:ring-2 focus:ring-lime-500 focus:border-transparent resize-none max-h-32 text-sm"
-                  rows="1"
-                ></textarea>
-                <button
-                  class="absolute right-2 bottom-2 text-gray-400 hover:text-gray-600"
-                  title="Voice input (coming soon)"
-                >
-                  <i class="lucide lucide-mic w-5 h-5"></i>
-                </button>
-              </div>
-              <button
-                @click="sendToAI()"
-                :disabled="!draft.trim()"
-                :class="draft.trim() ? 'bg-lime-500 hover:bg-lime-600' : 'bg-gray-300 cursor-not-allowed'"
-                class="rounded-full p-2.5 text-white flex-shrink-0"
-              >
-                <i class="lucide lucide-send w-5 h-5"></i>
-              </button>
-            </div>
-          </div>
-        </section>
-      </div>
-    </template>
+<script>
+function chatComponent () {
+  return {
+    messages: [],
+    draft: '', typing: false, id: 0,
+    quickActions: ['Find beaches','Events tonight','Budget tours','My favourites'],
+    async send () {
+      if (!this.draft.trim()) return
+      this.messages.push({ id: ++this.id, role: 'user', text: this.draft.trim() })
+      this.$nextTick(() => this.scroll())
+      const prompt = this.draft; this.draft = ''; this.typing = true
+      try {
+        const { reply } = await fetch('/api/ai-chat',{
+          method:'POST',headers:{'Content-Type':'application/json'},
+          body:JSON.stringify({prompt})
+        }).then(r=>r.json())
+        this.messages.push({ id: ++this.id, role: 'bot', text: reply||'Sorry 🤖' })
+      } catch { this.messages.push({ id: ++this.id, role: 'bot', text: 'Network error' }) }
+      finally { this.typing=false; this.$nextTick(()=>this.scroll()) }
+    },
+    scroll () { const el=document.getElementById('thread'); el.scrollTop = el.scrollHeight }
+  }
+}
+</script>
+<style>@keyframes ping-slow{0%{transform:scale(1);opacity:1}100%{transform:scale(1.6);opacity:0}}
+.animate-ping-slow{animation:ping-slow 1.2s cubic-bezier(0,0,0.2,1) infinite}</style>
 
     <!-- BOTTOM NAV INSIDE FRAME -->
     <nav
@@ -1165,158 +1056,7 @@ Would you like more details about any of these?</p>
       };
     }
 
-    function chatComponent() {
-      return {
-        messages: [
-          {
-            role: 'assistant',
-            text: 'Hello! Welcome to Lime. How can I help you plan your perfect vacation today?'
-          },
-          {
-            role: 'user',
-            text: 'I\'m looking for beach recommendations'
-          },
-          {
-            role: 'assistant',
-            text: 'Great choice! Here are some amazing beaches you might enjoy:\n\n1. Crane Beach - Known for its pink sand and stunning cliffs\n2. Bathsheba Beach - Perfect for surfing and dramatic scenery\n3. Accra Beach - Family-friendly with calm waters\n\nWould you like more details about any of these?'
-          }
-        ],
-        draft: '',
-        isTyping: false,
-        autoScrollEnabled: true,
-
-        init() {
-          // Load messages from localStorage if available
-          const savedMessages = localStorage.getItem('chat-messages');
-          if (savedMessages) {
-            this.messages = JSON.parse(savedMessages);
-          }
-
-          // Scroll to bottom on init
-          this.$nextTick(() => {
-            this.scrollToBottom();
-          });
-        },
-
-        sendToAI() {
-          if (!this.draft.trim()) return;
-
-          // Add user message
-          this.messages.push({
-            role: 'user',
-            text: this.draft.trim()
-          });
-
-          // Save to localStorage
-          this.saveMessages();
-
-          // Clear input and scroll to bottom
-          const message = this.draft;
-          this.draft = '';
-          this.scrollToBottom();
-
-          // Reset textarea height
-          const textarea = this.$el.querySelector('textarea');
-          if (textarea) textarea.style.height = 'auto';
-
-          // Simulate AI response
-          this.simulateResponse(message);
-        },
-
-        simulateResponse(message) {
-          // Show typing indicator
-          this.isTyping = true;
-          this.scrollToBottom();
-
-          // Simulate AI thinking time (1-2 seconds)
-          setTimeout(() => {
-            this.isTyping = false;
-
-            // Generate response based on message
-            let response = this.generateResponse(message);
-
-            // Add assistant message with animation flag
-            this.messages.push({
-              role: 'assistant',
-              text: response,
-              animate: true
-            });
-
-            // Save to localStorage
-            this.saveMessages();
-
-            // Scroll to bottom
-            this.scrollToBottom();
-
-            // Remove animation flag after animation completes
-            setTimeout(() => {
-              const lastIndex = this.messages.length - 1;
-              if (lastIndex >= 0 && this.messages[lastIndex].animate) {
-                this.messages[lastIndex].animate = false;
-              }
-            }, 500);
-          }, Math.random() * 1000 + 1000);
-        },
-
-        generateResponse(message) {
-          // Simple response generation logic
-          message = message.toLowerCase();
-
-          if (message.includes('beach') || message.includes('beaches')) {
-            return "Here are the top beaches nearby:\n\n1. Crane Beach\n2. Bathsheba Beach\n3. Accra Beach\n\nWould you like more details about any of these?";
-          } else if (message.includes('event') || message.includes('tonight')) {
-            return "I found these events happening tonight:\n\n• Reggae on the Beach (8:00 PM)\n• Rum Tasting Tour (7:30 PM)\n• Jazz Night at The Cliff (9:00 PM)\n\nShall I help you book tickets for any of these?";
-          } else if (message.includes('tour') || message.includes('budget')) {
-            return "Here are some budget-friendly tours:\n\n• Island Safari Tour - $45\n• Catamaran Cruise - $65\n• Walking Food Tour - $30\n\nAll of these have great reviews!";
-          } else if (message.includes('favourite') || message.includes('favorite')) {
-            return "I've found these items in your favorites:\n\n• Sunset Catamaran Cruise\n• Reggae on the Beach\n\nWould you like to book any of these again?";
-          } else {
-            return "I can help you discover the best local experiences! Ask me about beaches, events, tours, restaurants, or anything else you'd like to know about.";
-          }
-        },
-
-        sendQuickAction(action) {
-          this.draft = action;
-          this.sendToAI();
-        },
-
-        autoGrow(textarea) {
-          textarea.style.height = 'auto';
-          textarea.style.height = (textarea.scrollHeight) + 'px';
-        },
-
-        scrollToBottom() {
-          if (!this.autoScrollEnabled) return;
-
-          this.$nextTick(() => {
-            const container = this.$refs.messageContainer;
-            if (container) {
-              container.scrollTop = container.scrollHeight;
-            }
-          });
-        },
-
-        checkScroll() {
-          const container = this.$refs.messageContainer;
-          if (!container) return;
-
-          // Enable auto-scroll if user is near bottom
-          const isNearBottom = container.scrollHeight - container.scrollTop - container.clientHeight < 100;
-          this.autoScrollEnabled = isNearBottom;
-        },
-
-        clearChat() {
-          if (confirm('Are you sure you want to clear the conversation?')) {
-            this.messages = [];
-            localStorage.removeItem('chat-messages');
-          }
-        },
-
-        saveMessages() {
-          localStorage.setItem('chat-messages', JSON.stringify(this.messages));
-        }
-      };
-    }
+    // Chat component is now defined inline in the template
   </script>
 
   <script src="https://cdn.jsdelivr.net/npm/tailwind-scrollbar@3.3.5/dist/index.min.js"></script>
