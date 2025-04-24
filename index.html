@@ -12,14 +12,9 @@
   <link rel="manifest" href="/manifest.webmanifest">
 </head>
 <body class="h-full bg-gray-100 dark:bg-gray-900 overflow-x-hidden flex justify-center">
-  <!-- Skip to main content link for accessibility -->
-  <a href="#main-content" class="sr-only focus:not-sr-only absolute top-2 left-2 bg-lime-600 text-white px-3 py-1 rounded z-50">Skip to main content</a>
   <div x-data="app" x-init="init()">
     <!-- Phone frame now centred by the flex parent above -->
-    <nav aria-label="Primary" class="sr-only" id="main-nav"></nav>
-    <div id="phone" class="relative w-full max-w-[360px] h-[640px] sm:h-[700px] md:h-[800px] bg-white border border-lime-200 rounded-3xl shadow-2xl overflow-hidden">
-      <!-- ARIA landmark: main content -->
-      <main id="main-content" tabindex="-1" aria-label="App Main Content">
+    <div id="phone" class="relative w-[360px] h-[640px] bg-white border border-lime-200 rounded-3xl shadow-2xl overflow-hidden">
       <!-- Status Bar -->
       <div class="absolute top-0 left-0 right-0 flex justify-between items-center px-6 py-2 text-xs text-gray-700 bg-white bg-opacity-80 backdrop-blur-sm z-10">
         <div x-text="currentTime"></div>
@@ -45,7 +40,7 @@
          x-transition:leave="transition ease-in duration-300"
          x-transition:leave-start="opacity-100 transform translate-y-0"
          x-transition:leave-end="opacity-0 transform translate-y-2"
-         class="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 bg-lime-500 text-white px-4 py-2 rounded-lg shadow-lg flex items-center space-x-2 max-w-[90%]"
+         class="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 bg-lime-500 text-white px-4 py-2 rounded-lg shadow-lg flex items-center space-x-2"
          role="alert"
          aria-live="assertive">
       <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
@@ -53,35 +48,9 @@
       </svg>
       <span x-text="notificationMessage || 'Added to favorites!'"></span>
     </div>
-    <!-- Dashboard loading indicator -->
-    <template x-if="$store.dashboard && $store.dashboard.loading">
-      <div class="flex justify-center items-center py-4" role="status" aria-live="polite">
-        <svg class="animate-spin h-6 w-6 text-lime-500 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path></svg>
-        <span>Loading dashboard...</span>
-      </div>
-    </template>
-    <!-- Dashboard error message -->
-    <template x-if="$store.dashboard && $store.dashboard.error">
-      <div class="bg-red-100 text-red-700 px-4 py-2 rounded mb-2" role="alert" aria-live="assertive" x-text="$store.dashboard.error"></div>
-    </template>
-    <!-- Dashboard ARIA live region -->
-    <div class="sr-only" aria-live="polite" x-text="$store.dashboard && $store.dashboard.notification"></div>
-    <!-- Chat loading indicator -->
-    <template x-if="$store.chat && $store.chat.loading">
-      <div class="flex justify-center items-center py-2" role="status" aria-live="polite">
-        <svg class="animate-spin h-5 w-5 text-lime-400 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path></svg>
-        <span>Sending message...</span>
-      </div>
-    </template>
-    <!-- Chat error message -->
-    <template x-if="$store.chat && $store.chat.error">
-      <div class="bg-red-100 text-red-700 px-3 py-1 rounded mb-2" role="alert" aria-live="assertive" x-text="$store.chat.error"></div>
-    </template>
-    <!-- Chat ARIA live region -->
-    <div class="sr-only" aria-live="polite" x-text="$store.chat && $store.chat.notification"></div>
 
     <!-- Dark mode toggle -->
-    <button @click="toggleDarkMode()" class="fixed bottom-4 right-4 bg-gray-200 dark:bg-gray-700 p-2 rounded-full shadow-lg z-50 focus:outline-none focus:ring-2 focus:ring-lime-500" aria-label="Toggle dark mode" tabindex="0">
+    <button @click="toggleDarkMode()" class="fixed bottom-4 right-4 bg-gray-200 dark:bg-gray-700 p-2 rounded-full shadow-lg z-50" aria-label="Toggle dark mode">
       <svg x-show="!darkMode" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
       </svg>
@@ -92,34 +61,8 @@
 
     <!-- App Views - each view will be a separate component -->
 
-    <!-- Accessible Modal Dialog for 'View All' -->
-    <template x-if="showAllModal">
-      <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm" @keydown.window.escape="showAllModal = false" @click.self="showAllModal = false" role="dialog" aria-modal="true" aria-labelledby="modal-title" x-trap.noscroll="showAllModal">
-        <div class="bg-white rounded-2xl shadow-2xl max-w-lg w-[96vw] sm:w-[90vw] max-h-[90vh] overflow-y-auto p-4 sm:p-6 relative animate-fade-in" tabindex="0">
-          <button @click="showAllModal = false" class="absolute top-4 right-4 text-gray-400 hover:text-gray-700 focus:outline-none focus:ring-2 focus:ring-lime-500 rounded-full" aria-label="Close dialog">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
-          </button>
-          <h2 id="modal-title" class="text-lg font-semibold mb-4 text-gray-900" x-text="selectedCategory || 'All Items'"></h2>
-          <!-- Modal content: show all items in selectedCategory -->
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <template x-for="item in ($store.dashboard && $store.dashboard.categories.find(c => c.title === selectedCategory)?.items) || []" :key="item.id">
-              <div class="bg-gray-50 rounded-lg p-4 flex flex-col gap-2 shadow-sm">
-                <img :src="item.image" :alt="item.title" class="rounded-md h-28 w-full object-cover" />
-                <div class="font-bold text-gray-800" x-text="item.title"></div>
-                <div class="text-xs text-gray-500" x-text="item.meta"></div>
-                <div class="text-lime-600 font-semibold text-sm" x-text="item.price ? ('$' + item.price) : 'Free'"></div>
-              </div>
-            </template>
-            <template x-if="($store.dashboard && $store.dashboard.categories.find(c => c.title === selectedCategory)?.items.length) === 0">
-              <div class="col-span-full text-center text-gray-400 py-8">No items found.</div>
-            </template>
-          </div>
-        </div>
-      </div>
-    </template>
-
     <!-- Splash Screen -->
-    <div x-show="view === 'splash'" class="flex flex-col justify-center items-center h-full gap-6 pt-8 fade-in sm:pt-16 sm:gap-10 md:pt-24 md:gap-16" aria-label="Splash Screen">
+    <div x-show="view === 'splash'" class="flex flex-col justify-center items-center h-full gap-6 pt-8 fade-in">
       <div class="w-24 h-24 rounded-full bg-lime-400 flex items-center justify-center mb-4">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-14 w-14 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
@@ -144,16 +87,14 @@
       <h2 class="text-xl text-center font-semibold text-gray-800 mb-4">Welcome Back</h2>
       <div class="px-6 space-y-4">
         <div class="relative">
-          <input type="email" x-model="email" placeholder="Email" :class="{'border-red-500': emailError}" class="w-full border border-gray-300 p-3 rounded-lg pl-10 focus:outline-none focus:ring-2 focus:ring-lime-400 focus:border-transparent" aria-label="Email address" aria-invalid="true" aria-describedby="email-error" />
-<span id="email-error" x-show="emailError" class="text-red-600 text-xs mt-1 block" x-text="emailError" role="alert"></span>
+          <input type="email" x-model="email" placeholder="Email" :class="{'border-red-500': emailError}" class="w-full border border-gray-300 p-3 rounded-lg pl-10 focus:outline-none focus:ring-2 focus:ring-lime-400 focus:border-transparent" aria-label="Email address" />
           <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400 absolute left-3 top-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
           </svg>
           <p x-show="emailError" x-text="emailError" class="text-red-500 text-xs mt-1"></p>
         </div>
         <div class="relative">
-          <input type="password" x-model="password" placeholder="Password" :class="{'border-red-500': passwordError}" class="w-full border border-gray-300 p-3 rounded-lg pl-10 focus:outline-none focus:ring-2 focus:ring-lime-400 focus:border-transparent" aria-label="Password" aria-invalid="true" aria-describedby="password-error" />
-<span id="password-error" x-show="passwordError" class="text-red-600 text-xs mt-1 block" x-text="passwordError" role="alert"></span>
+          <input type="password" x-model="password" placeholder="Password" :class="{'border-red-500': passwordError}" class="w-full border border-gray-300 p-3 rounded-lg pl-10 focus:outline-none focus:ring-2 focus:ring-lime-400 focus:border-transparent" aria-label="Password" />
           <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400 absolute left-3 top-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
           </svg>
@@ -193,7 +134,7 @@
     <!-- View Templates -->
     <template x-if="view === 'dashboard'">
       <!-- MAIN SCROLL AREA -->
-      <div class="h-full overflow-y-auto pb-36 px-4 pt-8 bg-gray-50 scrollbar scrollbar-thumb-slate-300 scrollbar-track-transparent overscroll-none overscroll-x-none">
+      <div class="h-full overflow-y-auto pb-36 px-4 pt-8 bg-gray-50 scrollbar scrollbar-thumb-slate-300 scrollbar-track-transparent overscroll-x-none">
         <!-- Header with greeting and search -->
         <header class="mb-6">
           <div class="flex justify-between items-center mb-5">
@@ -285,7 +226,7 @@
         <div class="mt-8 mb-6" x-show="favorites.length > 0">
           <h3 class="text-base font-semibold flex items-center gap-1">
             <i class="lucide lucide-heart w-4 h-4 text-red-500"></i> My Favorites
-            <a href="#" class="ml-auto text-xs text-lime-600 flex items-center gap-0.5 focus:outline-none focus:ring-2 focus:ring-lime-500" tabindex="0" aria-label="See all items in this category">
+            <a href="#" class="ml-auto text-xs text-lime-600 flex items-center gap-0.5">
               See&nbsp;All <i class="lucide lucide-chevron-right w-3 h-3"></i>
             </a>
           </h3>
@@ -333,7 +274,7 @@
         <section id="todays-picks" class="mt-6">
           <h3 class="text-base font-semibold flex items-center gap-1">
             <i class="lucide lucide-sparkles w-4 h-4 text-lime-500"></i> Today's Picks
-            <a href="#" class="ml-auto text-xs text-lime-600 flex items-center gap-0.5 focus:outline-none focus:ring-2 focus:ring-lime-500" tabindex="0" aria-label="See all items in this category">
+            <a href="#" class="ml-auto text-xs text-lime-600 flex items-center gap-0.5">
               See&nbsp;All <i class="lucide lucide-chevron-right w-3 h-3"></i>
             </a>
           </h3>
@@ -393,7 +334,7 @@
         <section id="nearby-events" class="mt-8 pb-32">
           <h3 class="text-base font-semibold flex items-center gap-1">
             <i class="lucide lucide-map-pin w-4 h-4 text-lime-500"></i> Nearby Events
-            <a href="#" class="ml-auto text-xs text-lime-600 flex items-center gap-0.5 focus:outline-none focus:ring-2 focus:ring-lime-500" tabindex="0" aria-label="See all items in this category">
+            <a href="#" class="ml-auto text-xs text-lime-600 flex items-center gap-0.5">
               <i class="lucide lucide-map w-3.5 h-3.5 mr-0.5"></i> View Map
             </a>
           </h3>
@@ -471,7 +412,7 @@
     <!-- Profile View Template -->
     <template x-if="view === 'profile'">
       <!-- MAIN SCROLL AREA -->
-      <div class="h-full overflow-y-auto pb-36 bg-gray-100 scrollbar scrollbar-thumb-slate-300 scrollbar-track-transparent overscroll-none overscroll-x-none">
+      <div class="h-full overflow-y-auto pb-36 bg-gray-100 scrollbar scrollbar-thumb-slate-300 scrollbar-track-transparent overscroll-x-none">
         <!-- Header -->
         <header class="sticky top-0 z-10 bg-gray-100 pt-12 pb-4 px-5">
           <div class="flex justify-between items-center">
@@ -756,13 +697,13 @@
     <!-- Explore View Template -->
     <template x-if="view === 'explore'">
       <!-- EXPLORE PAGE -->
-      <div class="h-full overflow-y-auto pb-36 scrollbar scrollbar-thumb-slate-300 scrollbar-track-transparent overscroll-none overscroll-x-none">
+      <div class="h-full overflow-y-auto pb-36 scrollbar scrollbar-thumb-slate-300 scrollbar-track-transparent overscroll-x-none">
         <section id="explore" x-data="explorePage()" class="h-full flex flex-col">
 
           <!-- Sticky header --------------------------------------->
           <header class="sticky top-0 z-10 bg-white/95 backdrop-blur px-4 pt-4 pb-3 flex items-center gap-2">
             <h1 class="text-lg font-semibold flex-1">Explore</h1>
-            <button class="relative focus:outline-none focus:ring-2 focus:ring-lime-500" tabindex="0">
+            <button class="relative">
               <i class="lucide lucide-bell w-5 h-5"></i>
               <span class="absolute -top-1 -right-1 w-4 h-4 bg-rose-500 text-[10px] font-bold text-white rounded-full flex items-center justify-center">2</span>
             </button>
@@ -798,11 +739,11 @@
               </div>
 
               <!-- card list (horizontal on mobile / grid on larger) -->
-              <div class="flex gap-2 overflow-x-auto snap-x sm:grid sm:grid-cols-2 lg:grid-cols-3 sm:overflow-visible">
+              <div class="flex gap-4 overflow-x-auto snap-x sm:grid sm:grid-cols-2 lg:grid-cols-3 sm:overflow-visible">
                 <!-- Crane Beach -->
                 <article class="min-w-[220px] snap-center bg-white rounded-xl shadow-sm overflow-hidden sm:min-w-0 sm:w-full relative">
                   <img src="https://images.unsplash.com/photo-1590523277543-a94d2e4eb00b?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1000&q=80" alt="" class="h-28 w-full object-cover">
-                  <div class="p-2">
+                  <div class="p-3">
                     <h3 class="text-sm font-medium line-clamp-2">Crane Beach</h3>
                     <p class="text-xs text-slate-500 mt-1">Beach • 4.9 ★</p>
                   </div>
@@ -812,7 +753,7 @@
                 <!-- Bridgetown -->
                 <article class="min-w-[220px] snap-center bg-white rounded-xl shadow-sm overflow-hidden sm:min-w-0 sm:w-full relative">
                   <img src="https://images.unsplash.com/photo-1580674684081-7617fbf3d745?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1000&q=80" alt="" class="h-28 w-full object-cover">
-                  <div class="p-2">
+                  <div class="p-3">
                     <h3 class="text-sm font-medium line-clamp-2">Bridgetown</h3>
                     <p class="text-xs text-slate-500 mt-1">City • 4.7 ★</p>
                   </div>
@@ -822,7 +763,7 @@
                 <!-- Harrison's Cave -->
                 <article class="min-w-[220px] snap-center bg-white rounded-xl shadow-sm overflow-hidden sm:min-w-0 sm:w-full relative">
                   <img src="https://images.unsplash.com/photo-1583966855405-ac213b2c5293?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1000&q=80" alt="" class="h-28 w-full object-cover">
-                  <div class="p-2">
+                  <div class="p-3">
                     <h3 class="text-sm font-medium line-clamp-2">Harrison's Cave</h3>
                     <p class="text-xs text-slate-500 mt-1">Attraction • 4.8 ★</p>
                   </div>
@@ -832,7 +773,7 @@
                 <!-- Bathsheba Beach -->
                 <article class="min-w-[220px] snap-center bg-white rounded-xl shadow-sm overflow-hidden sm:min-w-0 sm:w-full relative">
                   <img src="https://images.unsplash.com/photo-1597900931464-dcea5e80d935?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1000&q=80" alt="" class="h-28 w-full object-cover">
-                  <div class="p-2">
+                  <div class="p-3">
                     <h3 class="text-sm font-medium line-clamp-2">Bathsheba Beach</h3>
                     <p class="text-xs text-slate-500 mt-1">Beach • 4.6 ★</p>
                   </div>
@@ -849,11 +790,11 @@
               </div>
 
               <!-- card list (horizontal on mobile / grid on larger) -->
-              <div class="flex gap-2 overflow-x-auto snap-x sm:grid sm:grid-cols-2 lg:grid-cols-3 sm:overflow-visible">
+              <div class="flex gap-4 overflow-x-auto snap-x sm:grid sm:grid-cols-2 lg:grid-cols-3 sm:overflow-visible">
                 <!-- Sunset Catamaran Cruise -->
                 <article class="min-w-[220px] snap-center bg-white rounded-xl shadow-sm overflow-hidden sm:min-w-0 sm:w-full relative">
                   <img src="https://images.unsplash.com/photo-1544551763-92ab472cad5d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1000&q=80" alt="" class="h-28 w-full object-cover">
-                  <div class="p-2">
+                  <div class="p-3">
                     <h3 class="text-sm font-medium line-clamp-2">Sunset Catamaran Cruise</h3>
                     <p class="text-xs text-slate-500 mt-1">2 hours • 4.9 ★</p>
                   </div>
@@ -863,7 +804,7 @@
                 <!-- Snorkeling Adventure -->
                 <article class="min-w-[220px] snap-center bg-white rounded-xl shadow-sm overflow-hidden sm:min-w-0 sm:w-full relative">
                   <img src="https://images.unsplash.com/photo-1583296365129-6a4eee1b5de7?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1000&q=80" alt="" class="h-28 w-full object-cover">
-                  <div class="p-2">
+                  <div class="p-3">
                     <h3 class="text-sm font-medium line-clamp-2">Snorkeling Adventure</h3>
                     <p class="text-xs text-slate-500 mt-1">3 hours • 4.8 ★</p>
                   </div>
@@ -873,7 +814,7 @@
                 <!-- Rum Distillery Tour -->
                 <article class="min-w-[220px] snap-center bg-white rounded-xl shadow-sm overflow-hidden sm:min-w-0 sm:w-full relative">
                   <img src="https://images.unsplash.com/photo-1565073624497-7e91b5cc3843?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1000&q=80" alt="" class="h-28 w-full object-cover">
-                  <div class="p-2">
+                  <div class="p-3">
                     <h3 class="text-sm font-medium line-clamp-2">Rum Distillery Tour</h3>
                     <p class="text-xs text-slate-500 mt-1">1.5 hours • 4.7 ★</p>
                   </div>
@@ -887,7 +828,6 @@
     </template>
 
 <!-- CHAT / Travel Assistant -->
-<!-- Chat loading/error indicators will appear above chat UI -->
 <template x-if="view === 'chat'">
   <section x-data="chatComponent()"
            class="h-full flex flex-col fade-in">
@@ -902,7 +842,7 @@
     <!-- Thread -->
     <div id="thread"
          class="flex-1 overflow-y-auto px-4 py-4 space-y-4
-                scrollbar scrollbar-thumb-slate-300 overscroll-none overscroll-x-none">
+                scrollbar scrollbar-thumb-slate-300 overscroll-x-none">
       <template x-if="messages.length===0">
         <div class="flex gap-3 overflow-x-auto pb-1">
           <template x-for="q in quickActions" :key="q">
@@ -918,7 +858,7 @@
           <div :class="msg.role==='user'
                         ? 'bg-lime-600 text-white ml-8'
                         : 'bg-slate-100 text-slate-800 mr-8'"
-               class="rounded-2xl px-3 py-2 max-w-[70%] text-sm whitespace-pre-line"
+               class="rounded-2xl px-3 py-2 max-w-[75%] text-sm whitespace-pre-line"
                x-text="msg.text"></div>
         </div>
       </template>
@@ -1112,63 +1052,11 @@ function chatComponent () {
             ]
           }
         ],
-        viewAll(title) {
-          this.selectedCategory = title;
-          this.showAllModal = true;
-        }
+        viewAll(title) { alert(`TODO: Show all for ${title}`) }
       };
     }
 
     // Chat component is now defined inline in the template
-    // --- Auth and View All Modal State ---
-    selectedCategory: null,
-    showAllModal: false,
-    // --- Auth handlers ---
-    async signup() {
-      try {
-        const res = await fetch('/api/signup', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email: this.email, password: this.password })
-        });
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.error || 'Signup failed');
-        this.notificationMessage = 'Signup successful!';
-        this.showNotification = true;
-        this.view = 'login';
-      } catch (err) {
-        this.notificationMessage = err.message;
-        this.showNotification = true;
-      }
-    },
-    async login() {
-      try {
-        const res = await fetch('/api/login', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email: this.email, password: this.password })
-        });
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.error || 'Login failed');
-        this.notificationMessage = 'Logged in!';
-        this.showNotification = true;
-        this.view = 'dashboard';
-      } catch (err) {
-        this.notificationMessage = err.message;
-        this.showNotification = true;
-      }
-    },
-    async logout() {
-      try {
-        await fetch('/api/logout', { method: 'POST' });
-        this.view = 'login';
-        this.notificationMessage = 'Logged out';
-        this.showNotification = true;
-      } catch (err) {
-        this.notificationMessage = 'Logout failed';
-        this.showNotification = true;
-      }
-    }
   </script>
 
   <script src="https://cdn.jsdelivr.net/npm/tailwind-scrollbar@3.3.5/dist/index.min.js"></script>
