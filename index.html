@@ -761,39 +761,39 @@
               <!-- card list (horizontal on mobile / grid on larger) -->
               <div class="flex gap-4 overflow-x-auto snap-x sm:grid sm:grid-cols-2 lg:grid-cols-3 sm:overflow-visible">
                 <!-- Crane Beach -->
-                <article x-show="isVisible('crane-beach')" class="min-w-[220px] snap-center bg-white rounded-xl shadow-sm overflow-hidden sm:min-w-0 sm:w-full relative">
+                <article x-show="isVisible('crane-beach')" @click="viewDetails('crane-beach')" class="min-w-[220px] snap-center bg-white rounded-xl shadow-sm overflow-hidden sm:min-w-0 sm:w-full relative cursor-pointer">
                   <img src="https://images.unsplash.com/photo-1590523277543-a94d2e4eb00b?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1000&q=80" alt="" class="h-28 w-full object-cover">
                   <div class="p-3">
                     <h3 class="text-sm font-medium line-clamp-2">Crane Beach</h3>
                     <p class="text-xs text-slate-500 mt-1">Beach • 4.9 ★</p>
                   </div>
-                  <button @click="toggleFavorite('crane-beach')" class="absolute top-2 left-2 bg-white/80 backdrop-blur rounded-full p-1.5">
+                  <button @click.stop="toggleFavorite('crane-beach')" class="absolute top-2 left-2 bg-white/80 backdrop-blur rounded-full p-1.5">
                     <i class="lucide lucide-heart w-4 h-4" :class="isFavorite('crane-beach') ? 'text-rose-500 fill-rose-500' : 'text-slate-400'"></i>
                   </button>
                   <span class="absolute top-2 right-2 bg-white/80 backdrop-blur text-lime-600 text-xs font-semibold rounded px-2 py-0.5">Free</span>
                 </article>
 
                 <!-- Bridgetown -->
-                <article x-show="isVisible('bridgetown')" class="min-w-[220px] snap-center bg-white rounded-xl shadow-sm overflow-hidden sm:min-w-0 sm:w-full relative">
+                <article x-show="isVisible('bridgetown')" @click="viewDetails('bridgetown')" class="min-w-[220px] snap-center bg-white rounded-xl shadow-sm overflow-hidden sm:min-w-0 sm:w-full relative cursor-pointer">
                   <img src="https://images.unsplash.com/photo-1580674684081-7617fbf3d745?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1000&q=80" alt="" class="h-28 w-full object-cover">
                   <div class="p-3">
                     <h3 class="text-sm font-medium line-clamp-2">Bridgetown</h3>
                     <p class="text-xs text-slate-500 mt-1">City • 4.7 ★</p>
                   </div>
-                  <button @click="toggleFavorite('bridgetown')" class="absolute top-2 left-2 bg-white/80 backdrop-blur rounded-full p-1.5">
+                  <button @click.stop="toggleFavorite('bridgetown')" class="absolute top-2 left-2 bg-white/80 backdrop-blur rounded-full p-1.5">
                     <i class="lucide lucide-heart w-4 h-4" :class="isFavorite('bridgetown') ? 'text-rose-500 fill-rose-500' : 'text-slate-400'"></i>
                   </button>
                   <span class="absolute top-2 right-2 bg-white/80 backdrop-blur text-lime-600 text-xs font-semibold rounded px-2 py-0.5">Free</span>
                 </article>
 
                 <!-- Harrison's Cave -->
-                <article x-show="isVisible('harrison-cave')" class="min-w-[220px] snap-center bg-white rounded-xl shadow-sm overflow-hidden sm:min-w-0 sm:w-full relative">
+                <article x-show="isVisible('harrison-cave')" @click="viewDetails('harrison-cave')" class="min-w-[220px] snap-center bg-white rounded-xl shadow-sm overflow-hidden sm:min-w-0 sm:w-full relative cursor-pointer">
                   <img src="https://images.unsplash.com/photo-1583966855405-ac213b2c5293?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1000&q=80" alt="" class="h-28 w-full object-cover">
                   <div class="p-3">
                     <h3 class="text-sm font-medium line-clamp-2">Harrison's Cave</h3>
                     <p class="text-xs text-slate-500 mt-1">Attraction • 4.8 ★</p>
                   </div>
-                  <button @click="toggleFavorite('harrison-cave')" class="absolute top-2 left-2 bg-white/80 backdrop-blur rounded-full p-1.5">
+                  <button @click.stop="toggleFavorite('harrison-cave')" class="absolute top-2 left-2 bg-white/80 backdrop-blur rounded-full p-1.5">
                     <i class="lucide lucide-heart w-4 h-4" :class="isFavorite('harrison-cave') ? 'text-rose-500 fill-rose-500' : 'text-slate-400'"></i>
                   </button>
                   <span class="absolute top-2 right-2 bg-white/80 backdrop-blur text-lime-600 text-xs font-semibold rounded px-2 py-0.5">$25</span>
@@ -811,39 +811,39 @@
               <!-- card list (horizontal on mobile / grid on larger) -->
               <div class="flex gap-4 overflow-x-auto snap-x sm:grid sm:grid-cols-2 lg:grid-cols-3 sm:overflow-visible">
                 <!-- Sunset Catamaran Cruise -->
-                <article x-show="isVisible('catamaran')" class="min-w-[220px] snap-center bg-white rounded-xl shadow-sm overflow-hidden sm:min-w-0 sm:w-full relative">
+                <article x-show="isVisible('catamaran')" @click="viewDetails('catamaran')" class="min-w-[220px] snap-center bg-white rounded-xl shadow-sm overflow-hidden sm:min-w-0 sm:w-full relative cursor-pointer">
                   <img src="https://images.unsplash.com/photo-1544551763-92ab472cad5d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1000&q=80" alt="" class="h-28 w-full object-cover">
                   <div class="p-3">
                     <h3 class="text-sm font-medium line-clamp-2">Sunset Catamaran Cruise</h3>
                     <p class="text-xs text-slate-500 mt-1">2 hours • 4.9 ★</p>
                   </div>
-                  <button @click="toggleFavorite('catamaran')" class="absolute top-2 left-2 bg-white/80 backdrop-blur rounded-full p-1.5">
+                  <button @click.stop="toggleFavorite('catamaran')" class="absolute top-2 left-2 bg-white/80 backdrop-blur rounded-full p-1.5">
                     <i class="lucide lucide-heart w-4 h-4" :class="isFavorite('catamaran') ? 'text-rose-500 fill-rose-500' : 'text-slate-400'"></i>
                   </button>
                   <span class="absolute top-2 right-2 bg-white/80 backdrop-blur text-lime-600 text-xs font-semibold rounded px-2 py-0.5">$65</span>
                 </article>
 
                 <!-- Snorkeling Adventure -->
-                <article x-show="isVisible('snorkeling')" class="min-w-[220px] snap-center bg-white rounded-xl shadow-sm overflow-hidden sm:min-w-0 sm:w-full relative">
+                <article x-show="isVisible('snorkeling')" @click="viewDetails('snorkeling')" class="min-w-[220px] snap-center bg-white rounded-xl shadow-sm overflow-hidden sm:min-w-0 sm:w-full relative cursor-pointer">
                   <img src="https://images.unsplash.com/photo-1583296365129-6a4eee1b5de7?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1000&q=80" alt="" class="h-28 w-full object-cover">
                   <div class="p-3">
                     <h3 class="text-sm font-medium line-clamp-2">Snorkeling Adventure</h3>
                     <p class="text-xs text-slate-500 mt-1">3 hours • 4.8 ★</p>
                   </div>
-                  <button @click="toggleFavorite('snorkeling')" class="absolute top-2 left-2 bg-white/80 backdrop-blur rounded-full p-1.5">
+                  <button @click.stop="toggleFavorite('snorkeling')" class="absolute top-2 left-2 bg-white/80 backdrop-blur rounded-full p-1.5">
                     <i class="lucide lucide-heart w-4 h-4" :class="isFavorite('snorkeling') ? 'text-rose-500 fill-rose-500' : 'text-slate-400'"></i>
                   </button>
                   <span class="absolute top-2 right-2 bg-white/80 backdrop-blur text-lime-600 text-xs font-semibold rounded px-2 py-0.5">$45</span>
                 </article>
 
                 <!-- Rum Distillery Tour -->
-                <article x-show="isVisible('rum-tour')" class="min-w-[220px] snap-center bg-white rounded-xl shadow-sm overflow-hidden sm:min-w-0 sm:w-full relative">
+                <article x-show="isVisible('rum-tour')" @click="viewDetails('rum-tour')" class="min-w-[220px] snap-center bg-white rounded-xl shadow-sm overflow-hidden sm:min-w-0 sm:w-full relative cursor-pointer">
                   <img src="https://images.unsplash.com/photo-1565073624497-7e91b5cc3843?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1000&q=80" alt="" class="h-28 w-full object-cover">
                   <div class="p-3">
                     <h3 class="text-sm font-medium line-clamp-2">Rum Distillery Tour</h3>
                     <p class="text-xs text-slate-500 mt-1">1.5 hours • 4.7 ★</p>
                   </div>
-                  <button @click="toggleFavorite('rum-tour')" class="absolute top-2 left-2 bg-white/80 backdrop-blur rounded-full p-1.5">
+                  <button @click.stop="toggleFavorite('rum-tour')" class="absolute top-2 left-2 bg-white/80 backdrop-blur rounded-full p-1.5">
                     <i class="lucide lucide-heart w-4 h-4" :class="isFavorite('rum-tour') ? 'text-rose-500 fill-rose-500' : 'text-slate-400'"></i>
                   </button>
                   <span class="absolute top-2 right-2 bg-white/80 backdrop-blur text-lime-600 text-xs font-semibold rounded px-2 py-0.5">$35</span>
@@ -861,26 +861,26 @@
               <!-- card list (horizontal on mobile / grid on larger) -->
               <div class="flex gap-4 overflow-x-auto snap-x sm:grid sm:grid-cols-2 lg:grid-cols-3 sm:overflow-visible">
                 <!-- Crop Over Festival -->
-                <article x-show="isVisible('crop-over')" class="min-w-[220px] snap-center bg-white rounded-xl shadow-sm overflow-hidden sm:min-w-0 sm:w-full relative">
+                <article x-show="isVisible('crop-over')" @click="viewDetails('crop-over')" class="min-w-[220px] snap-center bg-white rounded-xl shadow-sm overflow-hidden sm:min-w-0 sm:w-full relative cursor-pointer">
                   <img src="https://images.unsplash.com/photo-1541535650810-10d26f5c2ab3?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1000&q=80" alt="" class="h-28 w-full object-cover">
                   <div class="p-3">
                     <h3 class="text-sm font-medium line-clamp-2">Crop Over Festival</h3>
                     <p class="text-xs text-slate-500 mt-1">Event • 5.0 ★</p>
                   </div>
-                  <button @click="toggleFavorite('crop-over')" class="absolute top-2 left-2 bg-white/80 backdrop-blur rounded-full p-1.5">
+                  <button @click.stop="toggleFavorite('crop-over')" class="absolute top-2 left-2 bg-white/80 backdrop-blur rounded-full p-1.5">
                     <i class="lucide lucide-heart w-4 h-4" :class="isFavorite('crop-over') ? 'text-rose-500 fill-rose-500' : 'text-slate-400'"></i>
                   </button>
                   <span class="absolute top-2 right-2 bg-white/80 backdrop-blur text-lime-600 text-xs font-semibold rounded px-2 py-0.5">Varies</span>
                 </article>
 
                 <!-- Fish Market -->
-                <article x-show="isVisible('fish-market')" class="min-w-[220px] snap-center bg-white rounded-xl shadow-sm overflow-hidden sm:min-w-0 sm:w-full relative">
+                <article x-show="isVisible('fish-market')" @click="viewDetails('fish-market')" class="min-w-[220px] snap-center bg-white rounded-xl shadow-sm overflow-hidden sm:min-w-0 sm:w-full relative cursor-pointer">
                   <img src="https://images.unsplash.com/photo-1579191203631-5108e8df0ddf?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1000&q=80" alt="" class="h-28 w-full object-cover">
                   <div class="p-3">
                     <h3 class="text-sm font-medium line-clamp-2">Bridgetown Fish Market</h3>
                     <p class="text-xs text-slate-500 mt-1">Market • 4.5 ★</p>
                   </div>
-                  <button @click="toggleFavorite('fish-market')" class="absolute top-2 left-2 bg-white/80 backdrop-blur rounded-full p-1.5">
+                  <button @click.stop="toggleFavorite('fish-market')" class="absolute top-2 left-2 bg-white/80 backdrop-blur rounded-full p-1.5">
                     <i class="lucide lucide-heart w-4 h-4" :class="isFavorite('fish-market') ? 'text-rose-500 fill-rose-500' : 'text-slate-400'"></i>
                   </button>
                   <span class="absolute top-2 right-2 bg-white/80 backdrop-blur text-lime-600 text-xs font-semibold rounded px-2 py-0.5">Free</span>
@@ -895,6 +895,64 @@
                class="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 bg-lime-500 text-white px-4 py-2 rounded-lg shadow-lg flex items-center space-x-2 max-w-[90%]">
             <i class="lucide lucide-check-circle w-5 h-5"></i>
             <span x-text="notificationMessage"></span>
+          </div>
+
+          <!-- Item Detail Modal -->
+          <div x-show="showDetailModal"
+               class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50"
+               @click.self="closeDetailModal()">
+            <div x-show="showDetailModal"
+                 x-transition
+                 class="bg-white rounded-xl w-full max-w-md max-h-[90vh] overflow-y-auto">
+              <div x-show="selectedItem" class="relative">
+                <img :src="selectedItem?.image" :alt="selectedItem?.title" class="w-full h-48 object-cover">
+                <button @click="closeDetailModal()" class="absolute top-2 right-2 bg-white/80 backdrop-blur rounded-full p-2">
+                  <i class="lucide lucide-x w-5 h-5"></i>
+                </button>
+                <button @click="toggleFavorite(selectedItem?.id)" class="absolute top-2 left-2 bg-white/80 backdrop-blur rounded-full p-2">
+                  <i class="lucide lucide-heart w-5 h-5" :class="isFavorite(selectedItem?.id) ? 'text-rose-500 fill-rose-500' : 'text-slate-400'"></i>
+                </button>
+              </div>
+              <div class="p-4">
+                <div class="flex justify-between items-start">
+                  <h2 class="text-xl font-semibold" x-text="selectedItem?.title"></h2>
+                  <span class="bg-lime-100 text-lime-600 text-sm font-semibold rounded px-2 py-0.5" x-text="selectedItem?.price"></span>
+                </div>
+                <p class="text-sm text-slate-500 mt-1" x-text="selectedItem?.meta"></p>
+
+                <div class="mt-4">
+                  <h3 class="text-sm font-medium mb-2">Description</h3>
+                  <p class="text-sm text-slate-600" x-text="selectedItem?.description"></p>
+                </div>
+
+                <div class="mt-4 flex items-center justify-between">
+                  <div>
+                    <h3 class="text-sm font-medium mb-1">Reviews</h3>
+                    <div class="flex items-center">
+                      <div class="flex">
+                        <i class="lucide lucide-star w-4 h-4 text-amber-400 fill-amber-400"></i>
+                        <i class="lucide lucide-star w-4 h-4 text-amber-400 fill-amber-400"></i>
+                        <i class="lucide lucide-star w-4 h-4 text-amber-400 fill-amber-400"></i>
+                        <i class="lucide lucide-star w-4 h-4 text-amber-400 fill-amber-400"></i>
+                        <i class="lucide lucide-star-half w-4 h-4 text-amber-400 fill-amber-400"></i>
+                      </div>
+                      <span class="text-xs text-slate-500 ml-1" x-text="selectedItem?.reviews + ' reviews'"></span>
+                    </div>
+                  </div>
+                  <div x-show="selectedItem?.time">
+                    <h3 class="text-sm font-medium mb-1">Schedule</h3>
+                    <p class="text-xs text-slate-500" x-text="selectedItem?.time"></p>
+                  </div>
+                </div>
+
+                <div class="mt-6 flex gap-2">
+                  <button class="flex-1 bg-lime-500 text-white py-2.5 rounded-lg font-medium text-sm">Book Now</button>
+                  <button class="bg-slate-100 text-slate-600 p-2.5 rounded-lg">
+                    <i class="lucide lucide-share-2 w-5 h-5"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
           </div>
         </section>
       </div>
@@ -1083,56 +1141,107 @@ function chatComponent () {
       };
     }
 
-    // Simple version with basic interactivity, filtering, and search
+    // Simple version with basic interactivity, filtering, search, and detail modal
     function explorePageSimple() {
       return {
+        // Detail modal
+        showDetailModal: false,
+        selectedItem: null,
+
         // Favorites functionality
         favorites: [],
 
         // Search functionality
         searchQuery: '',
 
-        // Item details for search
+        // Item details for search and modal
         itemDetails: {
           'crane-beach': {
+            id: 'crane-beach',
             title: 'Crane Beach',
-            description: 'One of the most beautiful beaches in the Caribbean, with pink-tinged sand and crystal clear waters.',
-            category: 'beaches'
+            description: 'One of the most beautiful beaches in the Caribbean, with pink-tinged sand and crystal clear waters. Perfect for swimming and sunbathing.',
+            category: 'beaches',
+            image: 'https://images.unsplash.com/photo-1590523277543-a94d2e4eb00b?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1000&q=80',
+            meta: 'Beach • 4.9 ★',
+            price: 'Free',
+            reviews: 128,
+            time: 'Open 24/7'
           },
           'bridgetown': {
+            id: 'bridgetown',
             title: 'Bridgetown',
-            description: 'The capital city of Barbados, featuring colonial architecture, vibrant markets, and historic sites.',
-            category: 'museums'
+            description: 'The capital city of Barbados, featuring colonial architecture, vibrant markets, and historic sites. Don\'t miss the Parliament Buildings and National Heroes Square.',
+            category: 'museums',
+            image: 'https://images.unsplash.com/photo-1580674684081-7617fbf3d745?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1000&q=80',
+            meta: 'City • 4.7 ★',
+            price: 'Free',
+            reviews: 95
           },
           'harrison-cave': {
+            id: 'harrison-cave',
             title: 'Harrison's Cave',
-            description: 'An underground wonder with crystallized limestone, flowing streams, and deep pools.',
-            category: 'hikes'
+            description: 'An underground wonder with crystallized limestone, flowing streams, and deep pools. Take a tram tour through this magnificent cave system.',
+            category: 'hikes',
+            image: 'https://images.unsplash.com/photo-1583966855405-ac213b2c5293?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1000&q=80',
+            meta: 'Attraction • 4.8 ★',
+            price: '$25',
+            reviews: 203,
+            time: '9:00 AM - 4:00 PM'
           },
           'catamaran': {
+            id: 'catamaran',
             title: 'Sunset Catamaran Cruise',
-            description: 'Sail along the coast of Barbados on a luxury catamaran. Enjoy snorkeling with sea turtles.',
-            category: 'events'
+            description: 'Sail along the coast of Barbados on a luxury catamaran. Enjoy snorkeling with sea turtles, an open bar, and a beautiful Caribbean sunset.',
+            category: 'events',
+            image: 'https://images.unsplash.com/photo-1544551763-92ab472cad5d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1000&q=80',
+            meta: '2 hours • 4.9 ★',
+            price: '$65',
+            reviews: 245,
+            time: '5:30 PM daily'
           },
           'snorkeling': {
+            id: 'snorkeling',
             title: 'Snorkeling Adventure',
-            description: 'Explore vibrant coral reefs and swim with tropical fish and sea turtles.',
-            category: 'events'
+            description: 'Explore vibrant coral reefs and swim with tropical fish and sea turtles. Equipment and instruction provided for all skill levels.',
+            category: 'events',
+            image: 'https://images.unsplash.com/photo-1583296365129-6a4eee1b5de7?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1000&q=80',
+            meta: '3 hours • 4.8 ★',
+            price: '$45',
+            reviews: 178,
+            time: '10:00 AM & 2:00 PM'
           },
           'rum-tour': {
+            id: 'rum-tour',
             title: 'Rum Distillery Tour',
-            description: 'Visit the Mount Gay Rum Distillery, the oldest rum producer in the world.',
-            category: 'dining'
+            description: 'Visit the Mount Gay Rum Distillery, the oldest rum producer in the world. Learn about the rum-making process and enjoy a guided tasting.',
+            category: 'dining',
+            image: 'https://images.unsplash.com/photo-1565073624497-7e91b5cc3843?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1000&q=80',
+            meta: '1.5 hours • 4.7 ★',
+            price: '$35',
+            reviews: 156,
+            time: '11:00 AM & 3:00 PM'
           },
           'crop-over': {
+            id: 'crop-over',
             title: 'Crop Over Festival',
-            description: 'Barbados\' biggest cultural celebration with music, dance, and colorful costumes.',
-            category: 'events'
+            description: 'Barbados\' biggest cultural celebration with music, dance, and colorful costumes. Culminates in the Grand Kadooment Day parade.',
+            category: 'events',
+            image: 'https://images.unsplash.com/photo-1541535650810-10d26f5c2ab3?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1000&q=80',
+            meta: 'Event • 5.0 ★',
+            price: 'Varies',
+            reviews: 427,
+            time: 'July-August annually'
           },
           'fish-market': {
+            id: 'fish-market',
             title: 'Bridgetown Fish Market',
-            description: 'Experience the vibrant atmosphere of a traditional Caribbean fish market.',
-            category: 'dining'
+            description: 'Experience the vibrant atmosphere of a traditional Caribbean fish market. Watch fishermen bring in their daily catch and interact with local vendors.',
+            category: 'dining',
+            image: 'https://images.unsplash.com/photo-1579191203631-5108e8df0ddf?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1000&q=80',
+            meta: 'Market • 4.5 ★',
+            price: 'Free',
+            reviews: 68,
+            time: '6:00 AM - 11:00 AM daily'
           }
         },
 
@@ -1210,6 +1319,24 @@ function chatComponent () {
         setCategory(category) {
           this.activeCategory = category;
           this.searchQuery = ''; // Clear search when changing category
+        },
+
+        // View item details
+        viewDetails(id) {
+          this.selectedItem = this.itemDetails[id];
+          this.showDetailModal = true;
+
+          // Prevent body scrolling when modal is open
+          document.body.style.overflow = 'hidden';
+        },
+
+        // Close detail modal
+        closeDetailModal() {
+          this.showDetailModal = false;
+          this.selectedItem = null;
+
+          // Restore body scrolling
+          document.body.style.overflow = '';
         },
 
         // Toggle favorite status
