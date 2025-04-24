@@ -1047,12 +1047,12 @@ function chatComponent () {
         showMapView: false,
         categories: [
           { id: 'all', name: 'All', icon: 'layers' },
-          { id: 'beaches', name: 'Beaches', icon: 'waves' },
-          { id: 'dining', name: 'Dining', icon: 'utensils' },
-          { id: 'hotels', name: 'Hotels', icon: 'hotel' },
+          { id: 'beaches', name: 'Beaches', icon: 'umbrella' },
+          { id: 'dining', name: 'Dining', icon: 'coffee' },
+          { id: 'hotels', name: 'Hotels', icon: 'bed' },
           { id: 'nightlife', name: 'Nightlife', icon: 'music' },
           { id: 'hikes', name: 'Hikes', icon: 'mountain' },
-          { id: 'museums', name: 'Museums', icon: 'landmark' },
+          { id: 'museums', name: 'Museums', icon: 'building' },
           { id: 'events', name: 'Events', icon: 'calendar' }
         ],
         exploreSections: [
@@ -1258,7 +1258,7 @@ function chatComponent () {
             return {
               title: section.title,
               items: section.items.filter(item =>
-                item.category.toLowerCase() === this.activeCat.toLowerCase()
+                item.category && item.category.toLowerCase() === this.activeCat.toLowerCase()
               )
             };
           }).filter(section => section.items.length > 0);
