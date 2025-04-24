@@ -1,7 +1,14 @@
+import dashboardModule from '../js/modules/dashboard.js';
+
 export default function Dashboard() {
+  const dashboard = dashboardModule();
   return {
+    ...dashboard,
+    get ariaLiveNotification() {
+      return this.notification ? this.notification : '';
+    },
     init() {
-      // Component initialization logic here
+      
     },
     
     // Get the HTML for the dashboard view
@@ -12,7 +19,7 @@ export default function Dashboard() {
             <div class="flex justify-between items-center mb-6">
               <h2 class="text-xl font-semibold text-gray-800">Hello, Chris <span class="wave">👋</span></h2>
               <div class="relative">
-                <div class="w-10 h-10 rounded-full bg-lime-100 flex items-center justify-center cursor-pointer" @click="view = 'profile'">
+                <div class="w-10 h-10 rounded-full bg-lime-100 flex items-center justify-center" @click="view = 'profile'">
                   <span class="text-lime-600 font-medium">CB</span>
                 </div>
                 <div class="absolute -top-1 -right-1 bg-red-500 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full" x-show="notificationCount > 0" x-text="notificationCount"></div>
@@ -25,7 +32,7 @@ export default function Dashboard() {
             </div>
             
             <div class="mb-6">
-              <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-4 mb-3 hover:shadow-md transition-shadow cursor-pointer" @click="view = 'booking'">
+              <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-4 mb-3 hover:shadow-md transition-shadow" @click="view = 'booking'">
                 <div class="flex items-start justify-between">
                   <div class="flex items-start">
                     <div class="w-12 h-12 rounded-lg bg-orange-100 flex items-center justify-center text-orange-500 mr-3">
@@ -72,7 +79,7 @@ export default function Dashboard() {
             </div>
             
             <div class="mb-6">
-              <div class="relative overflow-hidden rounded-xl mb-3 hover:shadow-md transition-shadow cursor-pointer" @click="view = 'event-details'">
+              <div class="relative overflow-hidden rounded-xl mb-3 hover:shadow-md transition-shadow" @click="view = 'event-details'">
                 <img src="https://images.unsplash.com/photo-1517457373958-b7bdd4587205?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1169&q=80" class="w-full h-32 object-cover rounded-xl" loading="lazy" />
                 <div class="absolute top-2 right-2 z-10">
                   <button class="w-8 h-8 rounded-full bg-white/70 backdrop-blur-sm flex items-center justify-center text-gray-600 hover:text-red-500 transition-colors" 

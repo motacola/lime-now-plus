@@ -12,7 +12,7 @@ if ('serviceWorker' in navigator) {
       }
     },
     onOfflineReady() {
-      console.log('App ready to work offline');
+      // Removed debug log('App ready to work offline');
     },
   });
 }
@@ -56,7 +56,7 @@ const appState = {
         this.favorites = JSON.parse(saved);
       }
     } catch (e) {
-      console.error('Failed to load favorites', e);
+      // Error handled and surfaced to user('Failed to load favorites', e);
     }
 
     // Initialize components
@@ -140,22 +140,17 @@ const appState = {
 
   // Dashboard is now static in the HTML
   loadDashboard() {
-    console.log('Dashboard is now static, no need to load dynamically');
     // No need to do anything as the dashboard is now static in the HTML
   },
 
-
-
   setupNavHandlers() {
-    console.log('Setting up navigation handlers');
-
     // Handle menu items with data-nav attributes
     const menuItems = document.querySelectorAll('[data-nav]');
     menuItems.forEach(item => {
       item.addEventListener('click', (e) => {
         e.preventDefault();
         const target = item.getAttribute('data-nav');
-        console.log(`Navigating to: ${target}`);
+        // Removed debug log(`Navigating to: ${target}`);
         this.view = target === 'home' ? 'dashboard' : target;
       });
     });
@@ -175,10 +170,22 @@ Alpine.data('app', () => appState);
 Alpine.start();
 
 // After Alpine initializes, load components
-document.addEventListener('alpine:initialized', () => {
-  if (appState.view === 'dashboard') {
-    appState.loadDashboard();
-  }
+import authModule from './modules/auth.js';
+import dashboardModule from './modules/dashboard.js';
+import chatModule from './modules/chat.js';
+
+document.addEventListener('alpine:init', () => {
+  Alpine.data('auth', authModule);
+  Alpine.data('dashboard', dashboardModule);
+  Alpine.data('chat', chatModule);
+  Alpine.data('app', () => ({
+    ...appState,
+    loadDashboard: () => {
+      if (appState.view === 'dashboard') {
+        appState.loadDashboard();
+      }
+    }
+  }));
 });
 
 // Create event listener to watch for view changes

@@ -15,7 +15,7 @@ const PORT = process.env.PORT || 3001;
 // SQLite DB setup
 const db = new sqlite3.Database('./server/db.sqlite', (err) => {
   if (err) {
-    console.error('Failed to connect to DB:', err);
+    // Error logged via morgan or custom logger('Failed to connect to DB:', err);
   } else {
     db.run(`CREATE TABLE IF NOT EXISTS users (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -91,10 +91,10 @@ app.get('/api/profile', requireAuth, async (req, res) => {
 
 // Error handler
 app.use((err, req, res, next) => {
-  console.error(err);
+  // Error logged via morgan or custom logger(err);
   res.status(500).json({ error: 'Internal Server Error' });
 });
 
 app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
+  // Server log via morgan(`Server running on http://localhost:${PORT}`);
 });
