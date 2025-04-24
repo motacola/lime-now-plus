@@ -711,8 +711,35 @@
 
           <!-- Scroll area -->
           <div class="flex-1 px-4 overflow-y-auto">
-            <!-- Category pills (horizontal scroll) -->
-            <div class="mt-5 flex gap-3 overflow-x-auto pb-1">
+            <!-- Search bar -->
+            <div class="relative mt-3">
+              <input type="text" placeholder="Search destinations, activities..." x-model="searchQuery"
+                     class="w-full border border-slate-200 rounded-xl py-2.5 pl-10 pr-3 text-sm focus:outline-none focus:ring-2 focus:ring-lime-500">
+              <i class="lucide lucide-search w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
+              <button x-show="searchQuery" @click="clearSearch()" class="absolute right-3 top-1/2 -translate-y-1/2">
+                <i class="lucide lucide-x w-4 h-4 text-slate-400"></i>
+              </button>
+            </div>
+
+            <!-- Search Results -->
+            <div x-show="searchQuery.trim().length > 0" class="mt-5">
+              <div class="flex items-center mb-3">
+                <h2 class="text-base font-semibold">Search Results</h2>
+                <span class="ml-2 text-xs text-slate-500" x-show="hasSearchResults()">
+                  for "<span x-text="searchQuery"></span>"
+                </span>
+              </div>
+
+              <!-- No results message -->
+              <div x-show="!hasSearchResults()" class="bg-slate-50 rounded-xl p-8 text-center">
+                <i class="lucide lucide-search-x w-10 h-10 mx-auto mb-3 text-slate-300"></i>
+                <p class="text-slate-500">No results found for "<span x-text="searchQuery"></span>"</p>
+                <button @click="clearSearch()" class="mt-4 text-sm text-lime-600">Clear search</button>
+              </div>
+            </div>
+
+            <!-- Category pills (hidden when searching) -->
+            <div x-show="!searchQuery.trim()" class="mt-5 flex gap-3 overflow-x-auto pb-1">
               <template x-for="category in categories" :key="category.id">
                 <button
                   @click="setCategory(category.name)"
@@ -724,8 +751,8 @@
               </template>
             </div>
 
-            <!-- Popular Destinations Section -->
-            <div class="mt-8">
+            <!-- Popular Destinations Section (hidden when searching) -->
+            <div x-show="!searchQuery.trim()" class="mt-8">
               <div class="flex items-center mb-3">
                 <h2 class="text-base font-semibold">Popular Destinations</h2>
                 <a href="#" class="ml-auto text-xs text-lime-600">See All</a>
@@ -774,8 +801,8 @@
               </div>
             </div>
 
-            <!-- Trending Activities Section -->
-            <div class="mt-8">
+            <!-- Trending Activities Section (hidden when searching) -->
+            <div x-show="!searchQuery.trim()" class="mt-8">
               <div class="flex items-center mb-3">
                 <h2 class="text-base font-semibold">Trending Activities</h2>
                 <a href="#" class="ml-auto text-xs text-lime-600">See All</a>
@@ -824,8 +851,8 @@
               </div>
             </div>
 
-            <!-- Local Experiences Section -->
-            <div class="mt-8 mb-8">
+            <!-- Local Experiences Section (hidden when searching) -->
+            <div x-show="!searchQuery.trim()" class="mt-8 mb-8">
               <div class="flex items-center mb-3">
                 <h2 class="text-base font-semibold">Local Experiences</h2>
                 <a href="#" class="ml-auto text-xs text-lime-600">See All</a>
@@ -1056,11 +1083,58 @@ function chatComponent () {
       };
     }
 
-    // Simple version with basic interactivity and filtering
+    // Simple version with basic interactivity, filtering, and search
     function explorePageSimple() {
       return {
         // Favorites functionality
         favorites: [],
+
+        // Search functionality
+        searchQuery: '',
+
+        // Item details for search
+        itemDetails: {
+          'crane-beach': {
+            title: 'Crane Beach',
+            description: 'One of the most beautiful beaches in the Caribbean, with pink-tinged sand and crystal clear waters.',
+            category: 'beaches'
+          },
+          'bridgetown': {
+            title: 'Bridgetown',
+            description: 'The capital city of Barbados, featuring colonial architecture, vibrant markets, and historic sites.',
+            category: 'museums'
+          },
+          'harrison-cave': {
+            title: 'Harrison's Cave',
+            description: 'An underground wonder with crystallized limestone, flowing streams, and deep pools.',
+            category: 'hikes'
+          },
+          'catamaran': {
+            title: 'Sunset Catamaran Cruise',
+            description: 'Sail along the coast of Barbados on a luxury catamaran. Enjoy snorkeling with sea turtles.',
+            category: 'events'
+          },
+          'snorkeling': {
+            title: 'Snorkeling Adventure',
+            description: 'Explore vibrant coral reefs and swim with tropical fish and sea turtles.',
+            category: 'events'
+          },
+          'rum-tour': {
+            title: 'Rum Distillery Tour',
+            description: 'Visit the Mount Gay Rum Distillery, the oldest rum producer in the world.',
+            category: 'dining'
+          },
+          'crop-over': {
+            title: 'Crop Over Festival',
+            description: 'Barbados\' biggest cultural celebration with music, dance, and colorful costumes.',
+            category: 'events'
+          },
+          'fish-market': {
+            title: 'Bridgetown Fish Market',
+            description: 'Experience the vibrant atmosphere of a traditional Caribbean fish market.',
+            category: 'dining'
+          }
+        },
 
         // Category filtering
         activeCategory: 'All',
@@ -1084,17 +1158,58 @@ function chatComponent () {
           'fish-market': 'dining'
         },
 
-        // Check if item should be visible based on category filter
+        // Check if item should be visible based on category filter and search
         isVisible(id) {
+          // If searching, only show search results
+          if (this.searchQuery.trim()) {
+            return this.matchesSearch(id);
+          }
+
+          // Otherwise, filter by category
           if (this.activeCategory === 'All') {
             return true;
           }
           return this.itemCategories[id]?.toLowerCase() === this.activeCategory.toLowerCase();
         },
 
+        // Check if item matches search query
+        matchesSearch(id) {
+          if (!this.searchQuery.trim()) {
+            return true;
+          }
+
+          const query = this.searchQuery.toLowerCase();
+          const details = this.itemDetails[id];
+
+          if (!details) {
+            return false;
+          }
+
+          return (
+            details.title.toLowerCase().includes(query) ||
+            details.description.toLowerCase().includes(query) ||
+            details.category.toLowerCase().includes(query)
+          );
+        },
+
+        // Check if any search results exist
+        hasSearchResults() {
+          if (!this.searchQuery.trim()) {
+            return false;
+          }
+
+          return Object.keys(this.itemDetails).some(id => this.matchesSearch(id));
+        },
+
+        // Clear search
+        clearSearch() {
+          this.searchQuery = '';
+        },
+
         // Set active category
         setCategory(category) {
           this.activeCategory = category;
+          this.searchQuery = ''; // Clear search when changing category
         },
 
         // Toggle favorite status
