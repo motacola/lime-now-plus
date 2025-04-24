@@ -134,7 +134,7 @@
     <!-- View Templates -->
     <template x-if="view === 'dashboard'">
       <!-- MAIN SCROLL AREA -->
-      <div class="h-full overflow-y-auto pb-36 px-4 pt-8 bg-gray-50 scrollbar scrollbar-thumb-slate-300 scrollbar-track-transparent overscroll-x-none">
+      <div class="h-full overflow-y-auto pb-36 px-4 pt-8 bg-gray-50 scrollbar scrollbar-thumb-slate-300 scrollbar-track-transparent overscroll-none overscroll-x-none">
         <!-- Header with greeting and search -->
         <header class="mb-6">
           <div class="flex justify-between items-center mb-5">
@@ -412,7 +412,7 @@
     <!-- Profile View Template -->
     <template x-if="view === 'profile'">
       <!-- MAIN SCROLL AREA -->
-      <div class="h-full overflow-y-auto pb-36 bg-gray-100 scrollbar scrollbar-thumb-slate-300 scrollbar-track-transparent overscroll-x-none">
+      <div class="h-full overflow-y-auto pb-36 bg-gray-100 scrollbar scrollbar-thumb-slate-300 scrollbar-track-transparent overscroll-none overscroll-x-none">
         <!-- Header -->
         <header class="sticky top-0 z-10 bg-gray-100 pt-12 pb-4 px-5">
           <div class="flex justify-between items-center">
@@ -697,7 +697,7 @@
     <!-- Explore View Template -->
     <template x-if="view === 'explore'">
       <!-- EXPLORE PAGE -->
-      <div class="h-full overflow-y-auto pb-36 scrollbar scrollbar-thumb-slate-300 scrollbar-track-transparent overscroll-x-none">
+      <div class="h-full overflow-y-auto pb-36 scrollbar scrollbar-thumb-slate-300 scrollbar-track-transparent overscroll-none overscroll-x-none">
         <section id="explore" x-data="explorePage()" class="h-full flex flex-col">
 
           <!-- Sticky header --------------------------------------->
@@ -842,7 +842,7 @@
     <!-- Thread -->
     <div id="thread"
          class="flex-1 overflow-y-auto px-4 py-4 space-y-4
-                scrollbar scrollbar-thumb-slate-300 overscroll-x-none">
+                scrollbar scrollbar-thumb-slate-300 overscroll-none overscroll-x-none">
       <template x-if="messages.length===0">
         <div class="flex gap-3 overflow-x-auto pb-1">
           <template x-for="q in quickActions" :key="q">
