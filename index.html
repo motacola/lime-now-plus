@@ -698,51 +698,68 @@
 
     <!-- Explore View Template -->
     <template x-if="view === 'explore'">
-      <!-- ULTRA SIMPLIFIED VERSION WITH SEARCH BAR AND SCROLL -->
-      <div class="h-full overflow-y-scroll pb-36 custom-scrollbar" style="overflow-y: scroll !important;">
-        <div class="sticky top-0 z-10 bg-white/95 backdrop-blur px-4 pt-4 pb-3">
-          <h1 class="text-xl font-bold mb-3">Explore</h1>
-
-          <!-- Search bar -->
-          <div class="relative mb-4">
-            <input type="text" placeholder="Search destinations, activities..."
-                   class="w-full border border-slate-200 rounded-xl py-2.5 pl-10 pr-3 text-sm focus:outline-none focus:ring-2 focus:ring-lime-500">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-            </svg>
-          </div>
-
-          <!-- Category pills -->
-          <div class="flex gap-3 overflow-x-auto pb-2">
-            <button class="shrink-0 px-5 py-2 rounded-full text-sm whitespace-nowrap bg-lime-500 text-white">
-              All
-            </button>
-            <button class="shrink-0 px-5 py-2 rounded-full text-sm whitespace-nowrap bg-slate-100 text-slate-600">
-              Beaches
-            </button>
-            <button class="shrink-0 px-5 py-2 rounded-full text-sm whitespace-nowrap bg-slate-100 text-slate-600">
-              Dining
-            </button>
-            <button class="shrink-0 px-5 py-2 rounded-full text-sm whitespace-nowrap bg-slate-100 text-slate-600">
-              Hotels
-            </button>
-            <button class="shrink-0 px-5 py-2 rounded-full text-sm whitespace-nowrap bg-slate-100 text-slate-600">
-              Nightlife
-            </button>
-          </div>
+      <div class="h-full bg-white">
+        <!-- Fake scrollbar -->
+        <div class="absolute right-0 top-0 bottom-0 w-2 bg-gray-200 z-50">
+          <div id="fakeScrollThumb" class="absolute right-0 top-0 w-2 h-20 bg-gray-500 rounded-full"></div>
         </div>
 
-        <div class="px-4">
-          <!-- Popular Destinations Section -->
-          <div class="mt-6 mb-6">
-            <div class="flex items-center mb-3">
-              <h2 class="text-lg font-semibold">Popular Destinations</h2>
-              <a href="#" class="ml-auto text-xs text-lime-600">See All</a>
+        <!-- Content -->
+        <div id="exploreContent" class="h-full overflow-y-auto pb-36"
+             x-init="
+               setTimeout(() => {
+                 const content = document.getElementById('exploreContent');
+                 const thumb = document.getElementById('fakeScrollThumb');
+                 if (content && thumb) {
+                   content.addEventListener('scroll', () => {
+                     const scrollPercentage = content.scrollTop / (content.scrollHeight - content.clientHeight);
+                     const maxTop = content.clientHeight - thumb.clientHeight;
+                     thumb.style.top = (scrollPercentage * maxTop) + 'px';
+                   });
+                 }
+               }, 100);
+             "
+          <!-- Header -->
+          <div class="sticky top-0 z-10 bg-white px-4 pt-4 pb-3">
+            <h1 class="text-xl font-bold mb-3">Explore</h1>
+
+            <!-- Search bar -->
+            <div class="relative mb-4">
+              <input type="text" placeholder="Search destinations, activities..."
+                     class="w-full border border-gray-200 rounded-xl py-2.5 pl-10 pr-3 text-sm focus:outline-none focus:ring-2 focus:ring-lime-500">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
             </div>
 
-            <div class="grid grid-cols-1 gap-4">
+            <!-- Category pills -->
+            <div class="flex gap-3 overflow-x-auto pb-2">
+              <button class="shrink-0 px-5 py-2 rounded-full text-sm whitespace-nowrap bg-lime-500 text-white">
+                All
+              </button>
+              <button class="shrink-0 px-5 py-2 rounded-full text-sm whitespace-nowrap bg-gray-100 text-gray-600">
+                Beaches
+              </button>
+              <button class="shrink-0 px-5 py-2 rounded-full text-sm whitespace-nowrap bg-gray-100 text-gray-600">
+                Dining
+              </button>
+              <button class="shrink-0 px-5 py-2 rounded-full text-sm whitespace-nowrap bg-gray-100 text-gray-600">
+                Hotels
+              </button>
+            </div>
+          </div>
+
+          <!-- Main content -->
+          <div class="px-4">
+            <!-- Popular Destinations -->
+            <div class="mt-4 mb-6">
+              <div class="flex items-center mb-3">
+                <h2 class="text-lg font-semibold">Popular Destinations</h2>
+                <a href="#" class="ml-auto text-xs text-lime-600">See All</a>
+              </div>
+
               <!-- Crane Beach -->
-              <div class="bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm">
+              <div class="bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm mb-4">
                 <img src="https://images.unsplash.com/photo-1590523277543-a94d2e4eb00b?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1000&q=80"
                      alt="Crane Beach" class="w-full h-40 object-cover">
                 <div class="p-4">
@@ -769,18 +786,16 @@
                 </div>
               </div>
             </div>
-          </div>
 
-          <!-- Trending Activities Section -->
-          <div class="mb-8">
-            <div class="flex items-center mb-3">
-              <h2 class="text-lg font-semibold">Trending Activities</h2>
-              <a href="#" class="ml-auto text-xs text-lime-600">See All</a>
-            </div>
+            <!-- Trending Activities -->
+            <div class="mb-6">
+              <div class="flex items-center mb-3">
+                <h2 class="text-lg font-semibold">Trending Activities</h2>
+                <a href="#" class="ml-auto text-xs text-lime-600">See All</a>
+              </div>
 
-            <div class="grid grid-cols-1 gap-4">
               <!-- Sunset Catamaran Cruise -->
-              <div class="bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm">
+              <div class="bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm mb-4">
                 <img src="https://images.unsplash.com/photo-1544551763-92ab472cad5d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1000&q=80"
                      alt="Sunset Catamaran Cruise" class="w-full h-40 object-cover">
                 <div class="p-4">
@@ -803,72 +818,6 @@
                   <div class="mt-2 flex justify-between items-center">
                     <span class="text-sm text-gray-500">3 hours • 4.8 ★</span>
                     <span class="bg-lime-100 text-lime-600 text-xs font-semibold px-2 py-1 rounded">$45</span>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Harrison's Cave -->
-              <div class="bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm">
-                <img src="https://images.unsplash.com/photo-1583966855405-ac213b2c5293?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1000&q=80"
-                     alt="Harrison's Cave" class="w-full h-40 object-cover">
-                <div class="p-4">
-                  <h3 class="font-semibold">Harrison's Cave</h3>
-                  <p class="text-sm text-gray-600 mt-1">An underground wonder with crystallized limestone, flowing streams, and deep pools.</p>
-                  <div class="mt-2 flex justify-between items-center">
-                    <span class="text-sm text-gray-500">Attraction • 4.8 ★</span>
-                    <span class="bg-lime-100 text-lime-600 text-xs font-semibold px-2 py-1 rounded">$25</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Local Events Section -->
-          <div class="mb-8">
-            <div class="flex items-center mb-3">
-              <h2 class="text-lg font-semibold">Local Events</h2>
-              <a href="#" class="ml-auto text-xs text-lime-600">See All</a>
-            </div>
-
-            <div class="grid grid-cols-1 gap-4">
-              <!-- Crop Over Festival -->
-              <div class="bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm">
-                <img src="https://images.unsplash.com/photo-1541535650810-10d26f5c2ab3?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1000&q=80"
-                     alt="Crop Over Festival" class="w-full h-40 object-cover">
-                <div class="p-4">
-                  <h3 class="font-semibold">Crop Over Festival</h3>
-                  <p class="text-sm text-gray-600 mt-1">Barbados' biggest cultural celebration with music, dancing, and colorful costumes.</p>
-                  <div class="mt-2 flex justify-between items-center">
-                    <span class="text-sm text-gray-500">Event • 5.0 ★</span>
-                    <span class="bg-lime-100 text-lime-600 text-xs font-semibold px-2 py-1 rounded">Varies</span>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Fish Market -->
-              <div class="bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm">
-                <img src="https://images.unsplash.com/photo-1579191203631-5108e8df0ddf?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1000&q=80"
-                     alt="Bridgetown Fish Market" class="w-full h-40 object-cover">
-                <div class="p-4">
-                  <h3 class="font-semibold">Bridgetown Fish Market</h3>
-                  <p class="text-sm text-gray-600 mt-1">Experience the local fishing culture and taste the freshest seafood on the island.</p>
-                  <div class="mt-2 flex justify-between items-center">
-                    <span class="text-sm text-gray-500">Market • 4.5 ★</span>
-                    <span class="bg-lime-100 text-lime-600 text-xs font-semibold px-2 py-1 rounded">Free</span>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Reggae on the Beach -->
-              <div class="bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm">
-                <img src="https://images.unsplash.com/photo-1517457373958-b7bdd4587205?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1169&q=80"
-                     alt="Reggae on the Beach" class="w-full h-40 object-cover">
-                <div class="p-4">
-                  <h3 class="font-semibold">Reggae on the Beach</h3>
-                  <p class="text-sm text-gray-600 mt-1">Enjoy live reggae music while relaxing on the beautiful beaches of Barbados.</p>
-                  <div class="mt-2 flex justify-between items-center">
-                    <span class="text-sm text-gray-500">Music • 4.8 ★</span>
-                    <span class="bg-lime-100 text-lime-600 text-xs font-semibold px-2 py-1 rounded">$25</span>
                   </div>
                 </div>
               </div>
