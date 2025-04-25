@@ -699,7 +699,7 @@
     <!-- Explore View Template -->
     <template x-if="view === 'explore'">
       <!-- ULTRA SIMPLIFIED VERSION WITH SEARCH BAR AND SCROLL -->
-      <div class="h-full overflow-y-auto pb-36" style="scrollbar-width: thin; scrollbar-color: #cbd5e1 transparent;">
+      <div class="h-full overflow-y-scroll pb-36 custom-scrollbar" style="overflow-y: scroll !important;">
         <div class="sticky top-0 z-10 bg-white/95 backdrop-blur px-4 pt-4 pb-3">
           <h1 class="text-xl font-bold mb-3">Explore</h1>
 
@@ -816,6 +816,58 @@
                   <p class="text-sm text-gray-600 mt-1">An underground wonder with crystallized limestone, flowing streams, and deep pools.</p>
                   <div class="mt-2 flex justify-between items-center">
                     <span class="text-sm text-gray-500">Attraction • 4.8 ★</span>
+                    <span class="bg-lime-100 text-lime-600 text-xs font-semibold px-2 py-1 rounded">$25</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Local Events Section -->
+          <div class="mb-8">
+            <div class="flex items-center mb-3">
+              <h2 class="text-lg font-semibold">Local Events</h2>
+              <a href="#" class="ml-auto text-xs text-lime-600">See All</a>
+            </div>
+
+            <div class="grid grid-cols-1 gap-4">
+              <!-- Crop Over Festival -->
+              <div class="bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm">
+                <img src="https://images.unsplash.com/photo-1541535650810-10d26f5c2ab3?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1000&q=80"
+                     alt="Crop Over Festival" class="w-full h-40 object-cover">
+                <div class="p-4">
+                  <h3 class="font-semibold">Crop Over Festival</h3>
+                  <p class="text-sm text-gray-600 mt-1">Barbados' biggest cultural celebration with music, dancing, and colorful costumes.</p>
+                  <div class="mt-2 flex justify-between items-center">
+                    <span class="text-sm text-gray-500">Event • 5.0 ★</span>
+                    <span class="bg-lime-100 text-lime-600 text-xs font-semibold px-2 py-1 rounded">Varies</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Fish Market -->
+              <div class="bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm">
+                <img src="https://images.unsplash.com/photo-1579191203631-5108e8df0ddf?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1000&q=80"
+                     alt="Bridgetown Fish Market" class="w-full h-40 object-cover">
+                <div class="p-4">
+                  <h3 class="font-semibold">Bridgetown Fish Market</h3>
+                  <p class="text-sm text-gray-600 mt-1">Experience the local fishing culture and taste the freshest seafood on the island.</p>
+                  <div class="mt-2 flex justify-between items-center">
+                    <span class="text-sm text-gray-500">Market • 4.5 ★</span>
+                    <span class="bg-lime-100 text-lime-600 text-xs font-semibold px-2 py-1 rounded">Free</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Reggae on the Beach -->
+              <div class="bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm">
+                <img src="https://images.unsplash.com/photo-1517457373958-b7bdd4587205?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1169&q=80"
+                     alt="Reggae on the Beach" class="w-full h-40 object-cover">
+                <div class="p-4">
+                  <h3 class="font-semibold">Reggae on the Beach</h3>
+                  <p class="text-sm text-gray-600 mt-1">Enjoy live reggae music while relaxing on the beautiful beaches of Barbados.</p>
+                  <div class="mt-2 flex justify-between items-center">
+                    <span class="text-sm text-gray-500">Music • 4.8 ★</span>
                     <span class="bg-lime-100 text-lime-600 text-xs font-semibold px-2 py-1 rounded">$25</span>
                   </div>
                 </div>
@@ -981,19 +1033,33 @@ function chatComponent () {
       animation: messageAppear 0.3s ease-out forwards;
     }
 
-    /* Custom scrollbar styles for WebKit browsers */
-    ::-webkit-scrollbar {
-      width: 6px;
-      height: 6px;
+    /* Custom scrollbar styles */
+    .custom-scrollbar {
+      scrollbar-width: auto;
+      scrollbar-color: #64748b #f1f5f9;
     }
 
-    ::-webkit-scrollbar-track {
-      background: transparent;
+    /* For WebKit browsers (Chrome, Safari, Edge) */
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 12px;
+      height: 12px;
+      display: block;
     }
 
-    ::-webkit-scrollbar-thumb {
-      background-color: #cbd5e1;
-      border-radius: 3px;
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: #f1f5f9;
+      border-radius: 0;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background-color: #64748b;
+      border-radius: 20px;
+      border: 3px solid #f1f5f9;
+    }
+
+    /* Make scrollbar always visible */
+    .custom-scrollbar::-webkit-scrollbar-thumb:vertical {
+      min-height: 50px;
     }
   </style>
 
