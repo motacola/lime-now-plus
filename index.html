@@ -859,7 +859,7 @@
 <template x-if="view === 'chat'">
   <div class="h-full bg-white overflow-hidden">
     <div class="h-full flex flex-col" style="height: 100vh; -webkit-overflow-scrolling: touch;">
-      <section x-data="chatComponent()" class="h-full flex flex-col fade-in">
+      <section x-data="chatApp" class="h-full flex flex-col fade-in">
         <!-- Header -->
         <header class="flex items-center justify-between px-4 py-4 border-b bg-white/95 backdrop-blur sticky top-0 z-10">
           <div class="flex items-center">
@@ -980,8 +980,9 @@
 </template>
 
 <script>
-function chatComponent () {
-  return {
+// Chat component is now defined as a global Alpine.js component
+document.addEventListener('alpine:init', () => {
+  Alpine.data('chatApp', () => ({
     messages: [],
     draft: '',
     typing: false,
@@ -1002,11 +1003,6 @@ function chatComponent () {
         } catch (e) {
           console.error('Error loading saved messages:', e);
         }
-      }
-
-      // Add a simulated welcome message if no messages exist
-      if (this.messages.length === 0) {
-        // No welcome message needed as we have a welcome UI now
       }
     },
 
@@ -1116,7 +1112,13 @@ function chatComponent () {
         localStorage.removeItem('chat-messages');
       }
     }
-  }
+  }));
+});
+
+function chatComponent() {
+  // Legacy function kept for backward compatibility
+  console.warn('chatComponent() is deprecated, use Alpine.data("chatApp") instead');
+  return Alpine.data('chatApp')();
 }
 </script>
 <style>@keyframes ping-slow{0%{transform:scale(1);opacity:1}100%{transform:scale(1.6);opacity:0}}
