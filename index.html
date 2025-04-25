@@ -698,29 +698,14 @@
 
     <!-- Explore View Template -->
     <template x-if="view === 'explore'">
-      <div class="h-full bg-white">
-        <!-- Fake scrollbar -->
+      <div class="h-full bg-white relative">
+        <!-- Static fake scrollbar -->
         <div class="absolute right-0 top-0 bottom-0 w-2 bg-gray-200 z-50">
-          <div id="fakeScrollThumb" class="absolute right-0 top-0 w-2 h-20 bg-gray-500 rounded-full"></div>
+          <div class="absolute right-0 top-0 w-2 h-20 bg-gray-500 rounded-full"></div>
         </div>
 
-        <!-- Content -->
-        <div id="exploreContent" class="h-full overflow-y-auto pb-36"
-             x-init="
-               setTimeout(() => {
-                 const content = document.getElementById('exploreContent');
-                 const thumb = document.getElementById('fakeScrollThumb');
-                 if (content && thumb) {
-                   content.addEventListener('scroll', () => {
-                     const scrollPercentage = content.scrollTop / (content.scrollHeight - content.clientHeight);
-                     const maxTop = content.clientHeight - thumb.clientHeight;
-                     thumb.style.top = (scrollPercentage * maxTop) + 'px';
-                   });
-                 }
-               }, 100);
-             "
-          <!-- Header -->
-          <div class="sticky top-0 z-10 bg-white px-4 pt-4 pb-3">
+        <div class="h-full overflow-y-auto pb-36">
+          <div class="px-4 pt-4">
             <h1 class="text-xl font-bold mb-3">Explore</h1>
 
             <!-- Search bar -->
@@ -747,12 +732,9 @@
                 Hotels
               </button>
             </div>
-          </div>
 
-          <!-- Main content -->
-          <div class="px-4">
             <!-- Popular Destinations -->
-            <div class="mt-4 mb-6">
+            <div class="mt-6 mb-6">
               <div class="flex items-center mb-3">
                 <h2 class="text-lg font-semibold">Popular Destinations</h2>
                 <a href="#" class="ml-auto text-xs text-lime-600">See All</a>
