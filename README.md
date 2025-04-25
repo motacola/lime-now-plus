@@ -2,13 +2,32 @@
 
 Don't just visit. Lime like a local.
 
-A progressive web app (PWA) for "Lime Now+" - a tourism/local experience app.
+A progressive web app (PWA) for "Lime Now+" - a tourism/local experience app for Barbados.
+
+## Live Demo
+
+Visit the live demo at [lime-now-plus.vercel.app](https://lime-now-plus-37zcqdgo0-chrisbelgrave-gmailcoms-projects.vercel.app/)
+
+## Feedback
+
+We're actively seeking feedback on the app! Please try it out and let us know what you think by:
+
+1. Using the app and exploring all features
+2. Noting any bugs or issues you encounter
+3. Sharing your thoughts on the user interface and experience
+4. Suggesting improvements or new features
+
+You can provide feedback by:
+- Creating an issue on GitHub
+- Emailing your feedback to chrisbelgrave@gmail.com
+- Using the feedback form at [feedback form link]
 
 ## Features
 
 - Splash screen with app introduction
 - Login/Signup functionality with form validation
 - Dashboard with personalized recommendations
+- Interactive chat with AI travel assistant
 - Profile view with user information and favorites
 - Event details view with booking functionality
 - Dark mode support
