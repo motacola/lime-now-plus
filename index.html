@@ -136,7 +136,8 @@
     <!-- View Templates -->
     <template x-if="view === 'dashboard'">
       <!-- MAIN SCROLL AREA -->
-      <div class="h-full overflow-y-auto pb-36 px-4 pt-8 bg-gray-50 scrollbar scrollbar-thumb-slate-300 scrollbar-track-transparent overscroll-x-none">
+      <div class="h-full bg-gray-50 overflow-hidden">
+        <div class="h-full overflow-y-scroll pb-36 px-4 pt-8" style="height: 100vh; overflow-y: scroll !important; -webkit-overflow-scrolling: touch;">
         <!-- Header with greeting and search -->
         <header class="mb-6">
           <div class="flex justify-between items-center mb-5">
@@ -393,7 +394,6 @@
             </div>
           </div>
         </section>
-      </div>
         </div>
 
         <!-- Floating Action Button -->
@@ -405,7 +405,6 @@
           </button>
         </div>
 
-        </div>
       </div>
     </template>
 
@@ -414,7 +413,8 @@
     <!-- Profile View Template -->
     <template x-if="view === 'profile'">
       <!-- MAIN SCROLL AREA -->
-      <div class="h-full overflow-y-auto pb-36 bg-gray-100 scrollbar scrollbar-thumb-slate-300 scrollbar-track-transparent overscroll-x-none">
+      <div class="h-full bg-gray-100 overflow-hidden">
+        <div class="h-full overflow-y-scroll pb-36" style="height: 100vh; overflow-y: scroll !important; -webkit-overflow-scrolling: touch;">
         <!-- Header -->
         <header class="sticky top-0 z-10 bg-gray-100 pt-12 pb-4 px-5">
           <div class="flex justify-between items-center">
@@ -692,6 +692,7 @@
               Sign Out
             </button>
           </div>
+        </div>
         </div>
       </div>
     </template>
