@@ -22,7 +22,7 @@ const components = {};
 
 // App state management
 const appState = {
-  view: 'splash',
+  view: 'splash', // Start with splash screen
   activeTab: 'all',
   selectedDate: '13',
   selectedTime: '10:30 AM',
