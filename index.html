@@ -698,8 +698,8 @@
 
     <!-- Explore View Template -->
     <template x-if="view === 'explore'">
-      <div class="h-full bg-white">
-        <div class="h-full overflow-y-auto pb-36">
+      <div class="h-full bg-white overflow-hidden">
+        <div class="h-full overflow-y-scroll pb-36" style="height: 100vh; overflow-y: scroll !important; -webkit-overflow-scrolling: touch;">
           <div class="px-4 pt-4">
             <h1 class="text-xl font-bold mb-3">Explore</h1>
 
@@ -795,6 +795,56 @@
                   <div class="mt-2 flex justify-between items-center">
                     <span class="text-sm text-gray-500">3 hours • 4.8 ★</span>
                     <span class="bg-lime-100 text-lime-600 text-xs font-semibold px-2 py-1 rounded">$45</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Local Events Section -->
+            <div class="mb-6">
+              <div class="flex items-center mb-3">
+                <h2 class="text-lg font-semibold">Local Events</h2>
+                <a href="#" class="ml-auto text-xs text-lime-600">See All</a>
+              </div>
+
+              <!-- Crop Over Festival -->
+              <div class="bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm mb-4">
+                <img src="https://images.unsplash.com/photo-1541535650810-10d26f5c2ab3?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1000&q=80"
+                     alt="Crop Over Festival" class="w-full h-40 object-cover">
+                <div class="p-4">
+                  <h3 class="font-semibold">Crop Over Festival</h3>
+                  <p class="text-sm text-gray-600 mt-1">Barbados' biggest cultural celebration with music, dancing, and colorful costumes.</p>
+                  <div class="mt-2 flex justify-between items-center">
+                    <span class="text-sm text-gray-500">Event • 5.0 ★</span>
+                    <span class="bg-lime-100 text-lime-600 text-xs font-semibold px-2 py-1 rounded">Varies</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Fish Market -->
+              <div class="bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm mb-4">
+                <img src="https://images.unsplash.com/photo-1579191203631-5108e8df0ddf?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1000&q=80"
+                     alt="Bridgetown Fish Market" class="w-full h-40 object-cover">
+                <div class="p-4">
+                  <h3 class="font-semibold">Bridgetown Fish Market</h3>
+                  <p class="text-sm text-gray-600 mt-1">Experience the local fishing culture and taste the freshest seafood on the island.</p>
+                  <div class="mt-2 flex justify-between items-center">
+                    <span class="text-sm text-gray-500">Market • 4.5 ★</span>
+                    <span class="bg-lime-100 text-lime-600 text-xs font-semibold px-2 py-1 rounded">Free</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Reggae on the Beach -->
+              <div class="bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm">
+                <img src="https://images.unsplash.com/photo-1517457373958-b7bdd4587205?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1169&q=80"
+                     alt="Reggae on the Beach" class="w-full h-40 object-cover">
+                <div class="p-4">
+                  <h3 class="font-semibold">Reggae on the Beach</h3>
+                  <p class="text-sm text-gray-600 mt-1">Enjoy live reggae music while relaxing on the beautiful beaches of Barbados.</p>
+                  <div class="mt-2 flex justify-between items-center">
+                    <span class="text-sm text-gray-500">Music • 4.8 ★</span>
+                    <span class="bg-lime-100 text-lime-600 text-xs font-semibold px-2 py-1 rounded">$25</span>
                   </div>
                 </div>
               </div>
