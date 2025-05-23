@@ -67,7 +67,7 @@ const Hero = () => {
           <div className={`hidden md:block transition-all duration-1000 delay-300 transform ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-20 opacity-0'}`}>
             <div className="relative">
               {/* This would be a good place for a profile image or creative illustration */}
-              <div className="w-full h-96 bg-gradient-to-br from-primary-200 to-accent-100 rounded-2xl shadow-lg overflow-hidden relative">
+              <div className="w-full h-64 sm:h-72 lg:h-96 bg-gradient-to-br from-primary-200 to-accent-100 rounded-2xl shadow-lg overflow-hidden relative">
                 <div className="absolute inset-0 bg-white/30 backdrop-blur-sm flex items-center justify-center">
                   <div className="text-center p-8">
                     <div className="text-6xl mb-4">👋</div>
