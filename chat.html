@@ -36,8 +36,8 @@
 
     <!-- Chat Interface -->
     <div class="h-full bg-white overflow-hidden">
-      <div class="h-full flex flex-col" style="height: 100vh; -webkit-overflow-scrolling: touch;">
-        <section x-data="chatComponent()" class="h-full flex flex-col fade-in">
+      <div class="h-full flex flex-col" style="height: 100%; -webkit-overflow-scrolling: touch;">
+        <section x-data="chatPage()" class="h-full flex flex-col fade-in">
           <!-- Header -->
           <header class="flex items-center justify-between px-4 py-4 border-b bg-white/95 backdrop-blur sticky top-0 z-10">
             <div class="flex items-center">
@@ -63,15 +63,18 @@
 
           <!-- Thread -->
           <div id="thread" class="flex-1 overflow-y-scroll px-4 py-4 space-y-4 bg-gray-50">
+            <!-- Error Display -->
+            <div x-show="error" x-text="error" class="p-2 text-red-500 bg-red-100 rounded-md"></div>
+
             <!-- Welcome message when no messages -->
-            <template x-if="messages.length===0">
+            <template x-if="messages.length===0 && !loading">
               <div class="space-y-6">
                 <div class="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
                   <h3 class="font-medium text-gray-800 mb-2">Welcome to your Travel Assistant!</h3>
                   <p class="text-sm text-gray-600 mb-3">I can help you discover the best experiences in Barbados. What would you like to know?</p>
                   <div class="flex flex-wrap gap-2">
                     <template x-for="q in quickActions" :key="q">
-                      <button @click="draft=q; send()"
+                      <button @click="sendQuickAction(q)"
                               class="px-4 py-2 bg-lime-100 text-lime-700 rounded-full text-xs font-medium hover:bg-lime-200 transition-colors"
                               x-text="q"></button>
                     </template>
@@ -82,21 +85,21 @@
                 <div>
                   <h4 class="text-xs font-medium text-gray-500 uppercase tracking-wide mb-3">Popular Questions</h4>
                   <div class="space-y-2">
-                    <button @click="draft='What are the best beaches to visit?'; send()"
+                    <button @click="sendQuickAction('What are the best beaches to visit?')"
                             class="w-full text-left px-4 py-3 bg-white rounded-lg border border-gray-200 text-sm text-gray-700 hover:bg-gray-50 transition-colors flex items-center">
                       <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-lime-500 mr-2 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                       </svg>
                       What are the best beaches to visit?
                     </button>
-                    <button @click="draft='How do I get around the island?'; send()"
+                    <button @click="sendQuickAction('How do I get around the island?')"
                             class="w-full text-left px-4 py-3 bg-white rounded-lg border border-gray-200 text-sm text-gray-700 hover:bg-gray-50 transition-colors flex items-center">
                       <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-lime-500 mr-2 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                       </svg>
                       How do I get around the island?
                     </button>
-                    <button @click="draft='What local foods should I try?'; send()"
+                    <button @click="sendQuickAction('What local foods should I try?')"
                             class="w-full text-left px-4 py-3 bg-white rounded-lg border border-gray-200 text-sm text-gray-700 hover:bg-gray-50 transition-colors flex items-center">
                       <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-lime-500 mr-2 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -109,17 +112,17 @@
             </template>
 
             <!-- Message bubbles -->
-            <template x-for="msg in messages" :key="msg.id">
-              <div :class="msg.role==='user' ? 'flex justify-end' : 'flex justify-start'" class="message-animation">
-                <!-- Assistant avatar for bot messages -->
-                <div x-show="msg.role!=='user'" class="w-8 h-8 rounded-full bg-lime-100 flex-shrink-0 flex items-center justify-center mr-2">
+            <template x-for="(msg, index) in messages" :key="index">
+              <div :class="msg.type==='user' ? 'flex justify-end' : 'flex justify-start'" class="message-animation">
+                <!-- Assistant avatar for AI messages -->
+                <div x-show="msg.type==='ai'" class="w-8 h-8 rounded-full bg-lime-100 flex-shrink-0 flex items-center justify-center mr-2">
                   <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-lime-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
                   </svg>
                 </div>
 
                 <!-- Message bubble -->
-                <div :class="msg.role==='user'
+                <div :class="msg.type==='user'
                             ? 'bg-lime-600 text-white rounded-2xl rounded-tr-sm'
                             : 'bg-white text-gray-800 rounded-2xl rounded-tl-sm border border-gray-200'"
                      class="px-4 py-3 max-w-[75%] text-sm shadow-sm"
@@ -128,7 +131,7 @@
                 </div>
 
                 <!-- User avatar for user messages -->
-                <div x-show="msg.role==='user'" class="w-8 h-8 rounded-full bg-gray-200 flex-shrink-0 flex items-center justify-center ml-2">
+                <div x-show="msg.type==='user'" class="w-8 h-8 rounded-full bg-gray-200 flex-shrink-0 flex items-center justify-center ml-2">
                   <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                   </svg>
@@ -143,9 +146,10 @@
                       placeholder="Type a message…"
                       class="flex-1 resize-none bg-gray-100 border-none rounded-full py-3 px-4 text-sm focus:ring-2 focus:ring-lime-400 min-h-[44px] max-h-[120px]"
                       @keydown.enter.prevent="if(!$event.shiftKey) send()"
-                      @input="$el.style.height = '44px'; $el.style.height = ($el.scrollHeight > 120 ? 120 : $el.scrollHeight) + 'px'"></textarea>
+                      @input="$el.style.height = '44px'; $el.style.height = ($el.scrollHeight > 120 ? 120 : $el.scrollHeight) + 'px'"
+                      :disabled="loading"></textarea>
             <button type="submit"
-                    :disabled="!draft.trim()"
+                    :disabled="!draft.trim() || loading"
                     class="bg-lime-500 text-white p-3 rounded-full flex items-center justify-center disabled:opacity-40 hover:bg-lime-600 transition-colors shadow-sm">
               <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
@@ -247,126 +251,59 @@
     updateTime();
     setInterval(updateTime, 1000);
 
-    // Chat component
-    function chatComponent() {
-      return {
-        messages: [],
-        draft: '',
-        typing: false,
-        id: 0,
-        quickActions: ['Find beaches','Events tonight','Budget tours','My favourites'],
-
-        init() {
-          // Load messages from localStorage
-          const savedMessages = localStorage.getItem('chat-messages');
-          if (savedMessages) {
-            try {
-              const parsed = JSON.parse(savedMessages);
-              this.messages = parsed.messages || [];
-              this.id = parsed.lastId || 0;
-
-              // Scroll to bottom on init after a short delay to ensure DOM is ready
-              setTimeout(() => this.scroll(), 100);
-            } catch (e) {
-              console.error('Error loading saved messages:', e);
-            }
-          }
-        },
-
-        saveMessages() {
-          // Save messages to localStorage
-          localStorage.setItem('chat-messages', JSON.stringify({
-            messages: this.messages,
-            lastId: this.id
-          }));
-        },
-
-        async send() {
-          if (!this.draft.trim()) return;
-
-          // Add user message
-          this.messages.push({
-            id: ++this.id,
-            role: 'user',
-            text: this.draft.trim(),
-            timestamp: new Date().toISOString()
-          });
-
-          // Save to localStorage
-          this.saveMessages();
-
-          // Scroll to bottom
-          this.$nextTick(() => this.scroll());
-
-          // Prepare for assistant response
-          const prompt = this.draft;
-          this.draft = '';
-          this.typing = true;
-
-          // Simulate API call (in production, this would be a real API call)
-          try {
-            // Simulate network delay
-            await new Promise(resolve => setTimeout(resolve, 1000));
-
-            // For demo purposes, generate a simple response based on the prompt
-            let reply = "I'm sorry, I don't have information about that yet. As your travel assistant, I'm still learning about Barbados.";
-
-            if (prompt.toLowerCase().includes('beach')) {
-              reply = "Barbados has some amazing beaches! Crane Beach is known for its pink-tinged sand and crystal clear waters. Carlisle Bay is great for swimming and water sports. Bottom Bay is a picturesque spot with dramatic cliffs.";
-            } else if (prompt.toLowerCase().includes('food') || prompt.toLowerCase().includes('eat')) {
-              reply = "You must try Barbadian cuisine! Don't miss flying fish and cou-cou (the national dish), fish cakes, macaroni pie, and pudding and souse. Oistins Fish Fry on Friday nights is a must-visit for fresh seafood and local atmosphere.";
-            } else if (prompt.toLowerCase().includes('transport') || prompt.toLowerCase().includes('get around')) {
-              reply = "You can get around Barbados by:\n- Renting a car (they drive on the left)\n- Taking public buses (blue or yellow buses)\n- Hiring taxis (agree on fare before departure)\n- Joining organized tours for specific attractions";
-            } else if (prompt.toLowerCase().includes('event') || prompt.toLowerCase().includes('tonight')) {
-              reply = "Tonight in Barbados:\n- Live Reggae at Harbor Lights (8PM-1AM)\n- Sunset Catamaran Cruise (5:30PM)\n- Rum Tasting Tour at Mount Gay Distillery (last tour at 4PM)\n- Beach BBQ at Copacabana Beach Club (7PM)";
-            } else if (prompt.toLowerCase().includes('budget') || prompt.toLowerCase().includes('cheap')) {
-              reply = "Budget-friendly activities in Barbados:\n- Visit public beaches (all beaches are free)\n- Take the public bus around the island ($1-2 USD)\n- Explore Bridgetown's historic sites\n- Attend the Oistins Fish Fry on Friday (affordable local food)\n- Hike the Barbados National Trust trails";
-            } else if (prompt.toLowerCase().includes('favourite') || prompt.toLowerCase().includes('favorite')) {
-              reply = "Based on your preferences, you might enjoy:\n- Crane Beach for swimming\n- Harrison's Cave for exploration\n- St. Nicholas Abbey for history\n- Oistins Fish Fry for local cuisine\n- Animal Flower Cave for natural beauty";
-            }
-
-            // Add assistant response
-            this.messages.push({
-              id: ++this.id,
-              role: 'bot',
-              text: reply,
-              timestamp: new Date().toISOString()
-            });
-          } catch (error) {
-            // Handle error
-            this.messages.push({
-              id: ++this.id,
-              role: 'bot',
-              text: 'Sorry, I encountered a network error. Please try again later.',
-              timestamp: new Date().toISOString()
-            });
-          } finally {
-            // Update UI and save
-            this.typing = false;
-            this.saveMessages();
-            this.$nextTick(() => this.scroll());
-          }
-        },
-
-        scroll() {
-          const el = document.getElementById('thread');
-          if (el) el.scrollTop = el.scrollHeight;
-        },
-
-        // Clear chat history
-        clearChat() {
-          if (confirm('Are you sure you want to clear your chat history?')) {
-            this.messages = [];
-            this.id = 0;
-            localStorage.removeItem('chat-messages');
-          }
-        }
-      };
-    }
-
     // Initialize Lucide icons
     document.addEventListener('DOMContentLoaded', function() {
       lucide.createIcons();
+    });
+  </script>
+  <script type="module">
+    import chatModule from './src/js/modules/chat.js';
+
+    document.addEventListener('alpine:init', () => {
+      Alpine.data('chatPage', () => {
+        const module = chatModule(); // Initialize the module
+
+        return {
+          draft: '', // User's current input
+          quickActions: ['Find beaches', 'Events tonight', 'Budget tours', 'My favourites'],
+
+          init() {
+            console.log("Chat page initialized with chatModule");
+            // this.$nextTick(() => this.scroll()); // Optional: scroll on init
+          },
+
+          async send() {
+            if (!this.draft.trim()) return;
+
+            module.chatMessage = this.draft.trim();
+            await module.sendMessage();
+
+            this.draft = '';
+            this.$nextTick(() => this.scroll());
+          },
+
+          async sendQuickAction(action) {
+            this.draft = action;
+            await this.send();
+          },
+
+          clearChat() {
+            if (confirm('Are you sure you want to clear your chat history?')) {
+              module.clearChat();
+            }
+          },
+
+          scroll() {
+            const el = document.getElementById('thread');
+            if (el) el.scrollTop = el.scrollHeight;
+          },
+
+          get messages() { return module.messages; },
+          get loading() { return module.loading; },
+          get error() { return module.error; },
+          get typing() { return module.loading; }
+        };
+      });
     });
   </script>
 </body>
