@@ -1,8 +1,8 @@
 import React, { useEffect, useRef } from 'react';
 
 export default function Experience() {
-  const sectionRef = useRef(null);
-  const timelineRefs = useRef([]);
+  const sectionRef = useRef<HTMLDivElement | null>(null);
+  const timelineRefs = useRef<Array<HTMLDivElement | null>>([]);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -119,7 +119,9 @@ export default function Experience() {
                 <div
                   key={experience.company}
                   className={`relative opacity-0 ${isEven ? 'md:ml-auto' : ''}`}
-                  ref={el => timelineRefs.current[index] = el}
+                  ref={el => {
+                    timelineRefs.current[index] = el;
+                  }}
                   style={{ transitionDelay: `${delay}ms` }}
                 >
                   <div className={`flex flex-col md:flex-row items-center ${isEven ? 'md:flex-row-reverse' : ''}`}>

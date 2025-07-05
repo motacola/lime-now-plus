@@ -7,7 +7,10 @@ const Hero = () => {
     setIsVisible(true);
   }, []);
 
-  const scrollToSection = (e, sectionId) => {
+  const scrollToSection = (
+    e: React.MouseEvent<HTMLAnchorElement | HTMLButtonElement>,
+    sectionId: string
+  ) => {
     e.preventDefault();
     const section = document.getElementById(sectionId);
     if (section) {

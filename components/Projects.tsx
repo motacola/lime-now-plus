@@ -1,8 +1,8 @@
 import React, { useEffect, useRef } from 'react';
 
 const Projects = () => {
-  const sectionRef = useRef(null);
-  const projectRefs = useRef([]);
+  const sectionRef = useRef<HTMLDivElement | null>(null);
+  const projectRefs = useRef<Array<HTMLDivElement | null>>([]);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -97,7 +97,9 @@ const Projects = () => {
               <div
                 key={index}
                 className={`opacity-0 h-full`}
-                ref={el => projectRefs.current[index] = el}
+                ref={el => {
+                  projectRefs.current[index] = el;
+                }}
                 style={{ transitionDelay: `${delay}ms` }}
               >
                 <div className={`card h-full flex flex-col bg-gradient-to-br from-${project.color}-50 to-white border border-${project.color}-100`}>
