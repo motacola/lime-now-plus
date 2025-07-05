@@ -159,19 +159,19 @@ const careerEntries = [
 ];
 
 export default function CV() {
-  const [activeIndex, setActiveIndex] = useState(null);
-  const [activeSection, setActiveSection] = useState('about');
+  const [activeIndex, setActiveIndex] = useState<number | null>(null);
+  const [activeSection, setActiveSection] = useState<string>('about');
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
     setIsVisible(true);
   }, []);
 
-  const toggle = (i) => {
+  const toggle = (i: number) => {
     setActiveIndex(activeIndex === i ? null : i);
   };
 
-  const handleSectionClick = (sectionId) => {
+  const handleSectionClick = (sectionId: string) => {
     setActiveSection(sectionId);
     document.getElementById(sectionId)?.scrollIntoView({ behavior: 'smooth' });
   };

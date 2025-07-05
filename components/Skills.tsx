@@ -1,8 +1,8 @@
 import React, { useEffect, useRef } from 'react';
 
 const Skills = () => {
-  const sectionRef = useRef(null);
-  const skillRefs = useRef([]);
+  const sectionRef = useRef<HTMLDivElement | null>(null);
+  const skillRefs = useRef<Array<HTMLDivElement | null>>([]);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -110,7 +110,9 @@ const Skills = () => {
               <div
                 key={index}
                 className={`card p-6 opacity-0`}
-                ref={el => skillRefs.current[index] = el}
+                ref={el => {
+                  skillRefs.current[index] = el;
+                }}
                 style={{ transitionDelay: `${delay}ms` }}
               >
                 <div className={`flex items-center mb-6`}>
@@ -153,10 +155,12 @@ const Skills = () => {
 if (typeof document !== 'undefined') {
   document.addEventListener('DOMContentLoaded', () => {
     setTimeout(() => {
-      const skillBars = document.querySelectorAll('.skill-progress');
+      const skillBars = document.querySelectorAll<HTMLElement>('.skill-progress');
       skillBars.forEach(bar => {
         const width = bar.getAttribute('data-width');
-        bar.style.width = width;
+        if (width) {
+          bar.style.width = width;
+        }
       });
     }, 1000);
   });

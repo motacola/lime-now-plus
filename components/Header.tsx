@@ -21,7 +21,7 @@ const Header = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const isActive = (path) => {
+  const isActive = (path: string) => {
     return router.pathname === path;
   };
 
